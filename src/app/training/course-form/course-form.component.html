@@ -1,0 +1,101 @@
+<div class="course-form-container">
+    <div class="page-header">
+      <h1 class="page-title">{{ isEditMode ? 'Chỉnh sửa khóa học' : 'Thêm khóa học mới' }}</h1>
+      <button mat-button color="primary" (click)="cancel()">
+        <mat-icon>arrow_back</mat-icon>
+        Quay lại
+      </button>
+    </div>
+    
+    <mat-card class="course-form-card">
+      <form [formGroup]="courseForm" (ngSubmit)="onSubmit()">
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Tên khóa học</mat-label>
+            <input matInput formControlName="name" placeholder="Nhập tên khóa học">
+            <mat-error *ngIf="courseForm.get('name')?.hasError('required')">
+              Tên khóa học là trường bắt buộc
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Mô tả</mat-label>
+            <textarea matInput formControlName="description" placeholder="Nhập mô tả khóa học" rows="3"></textarea>
+            <mat-error *ngIf="courseForm.get('description')?.hasError('required')">
+              Mô tả là trường bắt buộc
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Lộ trình đào tạo</mat-label>
+            <mat-select formControlName="trainingPathId">
+              <mat-option *ngFor="let path of trainingPaths" [value]="path.id">
+                {{ path.name }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="courseForm.get('trainingPathId')?.hasError('required')">
+              Lộ trình đào tạo là trường bắt buộc
+            </mat-error>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline">
+            <mat-label>Cấp độ</mat-label>
+            <mat-select formControlName="level">
+              <mat-option *ngFor="let level of levels" [value]="level.value">
+                {{ level.label }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="courseForm.get('level')?.hasError('required')">
+              Cấp độ là trường bắt buộc
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Thời gian (tuần)</mat-label>
+            <input matInput type="number" formControlName="duration" min="1">
+            <mat-error *ngIf="courseForm.get('duration')?.hasError('required')">
+              Thời gian là trường bắt buộc
+            </mat-error>
+            <mat-error *ngIf="courseForm.get('duration')?.hasError('min')">
+              Thời gian phải lớn hơn 0
+            </mat-error>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline">
+            <mat-label>Số bài học</mat-label>
+            <input matInput type="number" formControlName="totalLessons" min="1">
+            <mat-error *ngIf="courseForm.get('totalLessons')?.hasError('required')">
+              Số bài học là trường bắt buộc
+            </mat-error>
+            <mat-error *ngIf="courseForm.get('totalLessons')?.hasError('min')">
+              Số bài học phải lớn hơn 0
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-row">
+          <div class="status-toggle form-field">
+            <label>Trạng thái:</label>
+            <mat-slide-toggle formControlName="isActive" color="primary">
+              {{ courseForm.get('isActive')?.value ? 'Hoạt động' : 'Không hoạt động' }}
+            </mat-slide-toggle>
+          </div>
+        </div>
+        
+        <mat-divider class="form-divider"></mat-divider>
+        
+        <div class="form-actions">
+          <button type="button" mat-button (click)="cancel()">Hủy</button>
+          <button type="submit" mat-raised-button color="primary" [disabled]="courseForm.invalid">
+            {{ isEditMode ? 'Cập nhật' : 'Tạo mới' }}
+          </button>
+        </div>
+      </form>
+    </mat-card>
+  </div>

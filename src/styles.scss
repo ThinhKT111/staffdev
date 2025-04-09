@@ -1,1 +1,105 @@
-/* You can add global styles to this file, and also import other style files */
+@import 'animate.css';
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  background-color: #f5f7fa;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  overflow-x: hidden;
+}
+
+.container {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+@media (min-width: 576px) {
+  .container {
+    max-width: 540px;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 720px;
+  }
+}
+
+@media (min-width: 992px) {
+  .container {
+    max-width: 960px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1140px;
+  }
+}
+
+.card-hover {
+  transition: all 0.3s ease;
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  }
+}
+
+.text-primary {
+  color: #03a9f4;
+}
+
+.text-accent {
+  color: #448aff;
+}
+
+.bg-primary {
+  background-color: #03a9f4;
+  color: white;
+}
+
+.bg-accent {
+  background-color: #448aff;
+  color: white;
+}
+
+// Custom scrollbar
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #03a9f4;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #0288d1;
+}
+
+// Animation classes
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.slide-up {
+  animation: slideInUp 0.5s ease-in-out;
+}
+
+.scale-in {
+  animation: zoomIn 0.3s ease-in-out;
+}

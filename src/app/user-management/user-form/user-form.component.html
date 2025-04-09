@@ -1,0 +1,113 @@
+<div class="user-form-container">
+    <div class="page-header">
+      <h1 class="page-title">{{ isEditMode ? 'Chỉnh sửa nhân viên' : 'Thêm nhân viên mới' }}</h1>
+      <button mat-button color="primary" (click)="cancel()">
+        <mat-icon>arrow_back</mat-icon>
+        Quay lại
+      </button>
+    </div>
+    
+    <mat-card class="user-form-card">
+      <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Họ</mat-label>
+            <input matInput formControlName="lastName" placeholder="Nhập họ">
+            <mat-error *ngIf="userForm.get('lastName')?.hasError('required')">
+              Họ là trường bắt buộc
+            </mat-error>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline">
+            <mat-label>Tên</mat-label>
+            <input matInput formControlName="firstName" placeholder="Nhập tên">
+            <mat-error *ngIf="userForm.get('firstName')?.hasError('required')">
+              Tên là trường bắt buộc
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Số CCCD</mat-label>
+            <input matInput formControlName="idNumber" placeholder="Nhập số CCCD">
+            <mat-error *ngIf="userForm.get('idNumber')?.hasError('required')">
+              Số CCCD là trường bắt buộc
+            </mat-error>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" placeholder="Nhập địa chỉ email">
+            <mat-error *ngIf="userForm.get('email')?.hasError('required')">
+              Email là trường bắt buộc
+            </mat-error>
+            <mat-error *ngIf="userForm.get('email')?.hasError('email')">
+              Email không hợp lệ
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Phòng ban</mat-label>
+            <mat-select formControlName="departmentId">
+              <mat-option *ngFor="let department of departments" [value]="department.id">
+                {{ department.name }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="userForm.get('departmentId')?.hasError('required')">
+              Phòng ban là trường bắt buộc
+            </mat-error>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline">
+            <mat-label>Vai trò</mat-label>
+            <mat-select formControlName="roleId">
+              <mat-option *ngFor="let role of roles" [value]="role.id">
+                {{ role.name }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="userForm.get('roleId')?.hasError('required')">
+              Vai trò là trường bắt buộc
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Số điện thoại</mat-label>
+            <input matInput formControlName="phoneNumber" placeholder="Nhập số điện thoại">
+            <mat-error *ngIf="userForm.get('phoneNumber')?.hasError('pattern')">
+              Số điện thoại phải có 10 chữ số
+            </mat-error>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline">
+            <mat-label>Ngày vào làm</mat-label>
+            <input matInput [matDatepicker]="joinDatePicker" formControlName="joinDate">
+            <mat-datepicker-toggle matSuffix [for]="joinDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #joinDatePicker></mat-datepicker>
+            <mat-error *ngIf="userForm.get('joinDate')?.hasError('required')">
+              Ngày vào làm là trường bắt buộc
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-row status-toggle">
+          <mat-slide-toggle formControlName="isActive" color="primary">
+            {{ userForm.get('isActive')?.value ? 'Đang hoạt động' : 'Không hoạt động' }}
+          </mat-slide-toggle>
+        </div>
+        
+        <mat-divider class="form-divider"></mat-divider>
+        
+        <div class="form-actions">
+          <button type="button" mat-button (click)="cancel()">Hủy</button>
+          <button type="submit" mat-raised-button color="primary" [disabled]="userForm.invalid">
+            {{ isEditMode ? 'Cập nhật' : 'Tạo mới' }}
+          </button>
+        </div>
+      </form>
+    </mat-card>
+  </div>

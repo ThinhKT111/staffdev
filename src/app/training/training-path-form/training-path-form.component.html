@@ -1,0 +1,85 @@
+<div class="training-path-form-container">
+    <div class="page-header">
+      <h1 class="page-title">{{ isEditMode ? 'Chỉnh sửa lộ trình đào tạo' : 'Thêm lộ trình đào tạo mới' }}</h1>
+      <button mat-button color="primary" (click)="cancel()">
+        <mat-icon>arrow_back</mat-icon>
+        Quay lại
+      </button>
+    </div>
+    
+    <mat-card class="path-form-card">
+      <form [formGroup]="pathForm" (ngSubmit)="onSubmit()">
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Tên lộ trình</mat-label>
+            <input matInput formControlName="name" placeholder="Nhập tên lộ trình đào tạo">
+            <mat-error *ngIf="pathForm.get('name')?.hasError('required')">
+              Tên lộ trình là trường bắt buộc
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Mô tả</mat-label>
+            <textarea matInput formControlName="description" placeholder="Nhập mô tả lộ trình" rows="3"></textarea>
+            <mat-error *ngIf="pathForm.get('description')?.hasError('required')">
+              Mô tả là trường bắt buộc
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Phòng ban</mat-label>
+            <mat-select formControlName="departmentId">
+              <mat-option [value]="null">Tất cả phòng ban</mat-option>
+              <mat-option *ngFor="let department of departments" [value]="department.id">
+                {{ department.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline">
+            <mat-label>Thời gian (tuần)</mat-label>
+            <input matInput type="number" formControlName="durationInWeeks" min="1">
+            <mat-error *ngIf="pathForm.get('durationInWeeks')?.hasError('required')">
+              Thời gian là trường bắt buộc
+            </mat-error>
+            <mat-error *ngIf="pathForm.get('durationInWeeks')?.hasError('min')">
+              Thời gian phải lớn hơn 0
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Số khóa học</mat-label>
+            <input matInput type="number" formControlName="totalCourses" min="0">
+            <mat-error *ngIf="pathForm.get('totalCourses')?.hasError('required')">
+              Số khóa học là trường bắt buộc
+            </mat-error>
+            <mat-error *ngIf="pathForm.get('totalCourses')?.hasError('min')">
+              Số khóa học không được âm
+            </mat-error>
+          </mat-form-field>
+          
+          <div class="status-toggle form-field">
+            <label>Trạng thái:</label>
+            <mat-slide-toggle formControlName="isActive" color="primary">
+              {{ pathForm.get('isActive')?.value ? 'Hoạt động' : 'Không hoạt động' }}
+            </mat-slide-toggle>
+          </div>
+        </div>
+        
+        <mat-divider class="form-divider"></mat-divider>
+        
+        <div class="form-actions">
+          <button type="button" mat-button (click)="cancel()">Hủy</button>
+          <button type="submit" mat-raised-button color="primary" [disabled]="pathForm.invalid">
+            {{ isEditMode ? 'Cập nhật' : 'Tạo mới' }}
+          </button>
+        </div>
+      </form>
+    </mat-card>
+  </div>

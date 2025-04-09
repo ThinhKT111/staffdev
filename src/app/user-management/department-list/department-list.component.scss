@@ -1,0 +1,70 @@
+.department-list-container {
+    padding: 20px 0;
+  }
+  
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .page-title {
+    font-size: 24px;
+    font-weight: 500;
+    margin: 0;
+  }
+  
+  .filter-card {
+    margin-bottom: 20px;
+    border-radius: 8px;
+  }
+  
+  .filter-container {
+    padding: 16px;
+  }
+  
+  mat-form-field {
+    width: 100%;
+    max-width: 500px;
+  }
+  
+  .table-container {
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: white;
+  }
+  
+  .department-table {
+    width: 100%;
+  }
+  
+  .mat-column-id {
+    width: 80px;
+  }
+  
+  .mat-column-actions {
+    width: 80px;
+    text-align: center;
+  }
+  
+  .text-warn {
+    color: #f44336;
+  }
+  
+  .no-data {
+    padding: 20px;
+    text-align: center;
+    color: rgba(0, 0, 0, 0.6);
+  }
+  
+  @media (max-width: 768px) {
+    .page-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .page-header button {
+      margin-top: 16px;
+    }
+  }

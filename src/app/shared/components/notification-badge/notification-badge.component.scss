@@ -1,0 +1,111 @@
+.notification-menu {
+    min-width: 320px !important;
+    max-width: 320px;
+  }
+  
+  ::ng-deep .notification-menu .mat-menu-content {
+    padding: 0 !important;
+  }
+  
+  .notification-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+  }
+  
+  .notification-title {
+    font-size: 16px;
+    font-weight: 500;
+  }
+  
+  .mark-all-read {
+    font-size: 12px;
+  }
+  
+  .notification-list {
+    max-height: 360px;
+    overflow-y: auto;
+  }
+  
+  .notification-item {
+    display: flex;
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    transition: background-color 0.2s;
+    
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.02);
+      cursor: pointer;
+    }
+    
+    &.unread {
+      background-color: rgba(3, 169, 244, 0.05);
+    }
+  }
+  
+  .notification-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 12px;
+    
+    &.task {
+      background-color: rgba(156, 39, 176, 0.1);
+      color: #9c27b0;
+    }
+    
+    &.course {
+      background-color: rgba(76, 175, 80, 0.1);
+      color: #4caf50;
+    }
+    
+    &.system {
+      background-color: rgba(255, 152, 0, 0.1);
+      color: #ff9800;
+    }
+    
+    &.alert {
+      background-color: rgba(244, 67, 54, 0.1);
+      color: #f44336;
+    }
+  }
+  
+  .notification-content {
+    flex: 1;
+  }
+  
+  .notification-message {
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.87);
+    margin-bottom: 4px;
+  }
+  
+  .notification-time {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.6);
+  }
+  
+  .no-notifications {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px;
+    color: rgba(0, 0, 0, 0.38);
+    
+    mat-icon {
+      font-size: 48px;
+      height: 48px;
+      width: 48px;
+      margin-bottom: 8px;
+    }
+  }
+  
+  .notification-footer {
+    display: flex;
+    justify-content: center;
+    padding: 8px;
+  }

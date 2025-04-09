@@ -1,0 +1,74 @@
+<div class="department-list-container">
+    <div class="page-header">
+      <h1 class="page-title">Quản lý phòng ban</h1>
+      <button mat-raised-button color="primary" (click)="openDepartmentForm()">
+        <mat-icon>add</mat-icon>
+        Thêm phòng ban
+      </button>
+    </div>
+    
+    <mat-card class="filter-card">
+      <div class="filter-container">
+        <mat-form-field appearance="outline">
+          <mat-label>Tìm kiếm</mat-label>
+          <input matInput [formControl]="searchControl" placeholder="Tìm theo tên, mô tả..." (keyup)="applyFilter($event)">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+      </div>
+    </mat-card>
+    
+    <div class="table-container mat-elevation-z2">
+      <table mat-table [dataSource]="filteredDepartments" class="department-table">
+        <!-- ID Column -->
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef> ID </th>
+          <td mat-cell *matCellDef="let department"> {{department.id}} </td>
+        </ng-container>
+    
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef> Tên phòng ban </th>
+          <td mat-cell *matCellDef="let department"> {{department.name}} </td>
+        </ng-container>
+    
+        <!-- Description Column -->
+        <ng-container matColumnDef="description">
+          <th mat-header-cell *matHeaderCellDef> Mô tả </th>
+          <td mat-cell *matCellDef="let department"> {{department.description}} </td>
+        </ng-container>
+    
+        <!-- Manager Column -->
+        <ng-container matColumnDef="manager">
+          <th mat-header-cell *matHeaderCellDef> Quản lý </th>
+          <td mat-cell *matCellDef="let department"> {{department.managerId ? 'ID: ' + department.managerId : 'Chưa có'}} </td>
+        </ng-container>
+    
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef> Hành động </th>
+          <td mat-cell *matCellDef="let department">
+            <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions menu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="openDepartmentForm(department)">
+                <mat-icon>edit</mat-icon>
+                <span>Chỉnh sửa</span>
+              </button>
+              <button mat-menu-item (click)="deleteDepartment(department.id)">
+                <mat-icon color="warn">delete</mat-icon>
+                <span class="text-warn">Xóa</span>
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+    
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+      
+      <div *ngIf="filteredDepartments.length === 0" class="no-data">
+        <p>Không có dữ liệu phòng ban</p>
+      </div>
+    </div>
+  </div>

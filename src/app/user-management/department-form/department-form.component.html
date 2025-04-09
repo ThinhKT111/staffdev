@@ -1,0 +1,40 @@
+<div class="department-form-container">
+    <h2 mat-dialog-title>{{ isEditMode ? 'Chỉnh sửa phòng ban' : 'Thêm phòng ban mới' }}</h2>
+    
+    <mat-dialog-content>
+      <form [formGroup]="departmentForm">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Tên phòng ban</mat-label>
+          <input matInput formControlName="name" placeholder="Nhập tên phòng ban">
+          <mat-error *ngIf="departmentForm.get('name')?.hasError('required')">
+            Tên phòng ban là trường bắt buộc
+          </mat-error>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Mô tả</mat-label>
+          <textarea matInput formControlName="description" placeholder="Nhập mô tả phòng ban" rows="3"></textarea>
+          <mat-error *ngIf="departmentForm.get('description')?.hasError('required')">
+            Mô tả là trường bắt buộc
+          </mat-error>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Quản lý</mat-label>
+          <mat-select formControlName="managerId">
+            <mat-option [value]="null">-- Chọn quản lý --</mat-option>
+            <mat-option *ngFor="let manager of managers" [value]="manager.id">
+              {{ manager.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </form>
+    </mat-dialog-content>
+    
+    <mat-dialog-actions align="end">
+      <button mat-button (click)="onCancel()">Hủy</button>
+      <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="departmentForm.invalid">
+        {{ isEditMode ? 'Cập nhật' : 'Thêm mới' }}
+      </button>
+    </mat-dialog-actions>
+  </div>

@@ -1,0 +1,122 @@
+<div class="course-list-container">
+    <div class="page-header">
+      <div class="page-title-section">
+        <h1 class="page-title">Danh sách khóa học</h1>
+        <div *ngIf="selectedPathId" class="path-filter">
+          <span>Lộ trình: </span>
+          <span class="path-name">{{ getPathName(selectedPathId) }}</span>
+          <button mat-button color="primary" [routerLink]="['/training/courses']">
+            <mat-icon>clear</mat-icon>
+            Xem tất cả
+          </button>
+        </div>
+      </div>
+      <button mat-raised-button color="primary" [routerLink]="['/training/courses/create']" [queryParams]="selectedPathId ? {pathId: selectedPathId} : {}">
+        <mat-icon>add</mat-icon>
+        Thêm khóa học mới
+      </button>
+    </div>
+    
+    <mat-card class="filter-card">
+      <div class="filter-container">
+        <mat-form-field appearance="outline">
+          <mat-label>Tìm kiếm</mat-label>
+          <input matInput [formControl]="searchControl" placeholder="Tìm theo tên, mô tả..." (keyup)="applyFilter($event)">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+      </div>
+    </mat-card>
+    
+    <div class="table-container mat-elevation-z2">
+      <table mat-table [dataSource]="filteredCourses" class="course-table">
+        <!-- ID Column -->
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef> ID </th>
+          <td mat-cell *matCellDef="let course"> {{course.id}} </td>
+        </ng-container>
+    
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef> Tên khóa học </th>
+          <td mat-cell *matCellDef="let course"> 
+            <div class="course-name">{{course.name}}</div>
+            <div class="course-description">{{course.description}}</div>
+          </td>
+        </ng-container>
+    
+        <!-- Path Column -->
+        <ng-container matColumnDef="path">
+          <th mat-header-cell *matHeaderCellDef> Lộ trình </th>
+          <td mat-cell *matCellDef="let course"> {{getPathName(course.trainingPathId)}} </td>
+        </ng-container>
+    
+        <!-- Level Column -->
+        <ng-container matColumnDef="level">
+          <th mat-header-cell *matHeaderCellDef> Cấp độ </th>
+          <td mat-cell *matCellDef="let course"> 
+            <div class="level-chip" [ngClass]="course.level">
+              {{getLevelLabel(course.level)}}
+            </div>
+          </td>
+        </ng-container>
+    
+        <!-- Duration Column -->
+        <ng-container matColumnDef="duration">
+          <th mat-header-cell *matHeaderCellDef> Thời gian (tuần) </th>
+          <td mat-cell *matCellDef="let course"> {{course.duration}} </td>
+        </ng-container>
+    
+        <!-- Total Lessons Column -->
+        <ng-container matColumnDef="totalLessons">
+          <th mat-header-cell *matHeaderCellDef> Số bài học </th>
+          <td mat-cell *matCellDef="let course"> {{course.totalLessons}} </td>
+        </ng-container>
+    
+        <!-- Status Column -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef> Trạng thái </th>
+          <td mat-cell *matCellDef="let course">
+            <div class="status-chip" [class.active]="course.isActive" [class.inactive]="!course.isActive">
+              {{course.isActive ? 'Hoạt động' : 'Không hoạt động'}}
+            </div>
+          </td>
+        </ng-container>
+    
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef> Hành động </th>
+          <td mat-cell *matCellDef="let course">
+            <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Actions menu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item [routerLink]="['/training/courses', course.id]">
+                <mat-icon>visibility</mat-icon>
+                <span>Xem chi tiết</span>
+              </button>
+              <button mat-menu-item [routerLink]="['/training/courses/edit', course.id]">
+                <mat-icon>edit</mat-icon>
+                <span>Chỉnh sửa</span>
+              </button>
+              <button mat-menu-item (click)="toggleStatus(course)">
+                <mat-icon>{{ course.isActive ? 'toggle_off' : 'toggle_on' }}</mat-icon>
+                <span>{{ course.isActive ? 'Vô hiệu hóa' : 'Kích hoạt' }}</span>
+              </button>
+              <mat-divider></mat-divider>
+              <button mat-menu-item (click)="deleteCourse(course.id)">
+                <mat-icon color="warn">delete</mat-icon>
+                <span class="text-warn">Xóa</span>
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+    
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+      
+      <div *ngIf="filteredCourses.length === 0" class="no-data">
+        <p>Không có dữ liệu khóa học</p>
+      </div>
+    </div>
+  </div>

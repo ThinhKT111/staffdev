@@ -1,0 +1,16 @@
+<div class="page-header-container">
+    <div class="page-title-container">
+      <h1 class="page-title">{{ pageTitle }}</h1>
+      <div class="page-breadcrumb">
+        <span *ngFor="let crumb of breadcrumbs; let last = last">
+          <a [routerLink]="crumb.link" *ngIf="!last">{{ crumb.label }}</a>
+          <span *ngIf="!last" class="breadcrumb-separator">/</span>
+          <span *ngIf="last" class="current-page">{{ crumb.label }}</span>
+        </span>
+      </div>
+    </div>
+    
+    <div class="page-actions">
+      <ng-content></ng-content>
+    </div>
+  </div>

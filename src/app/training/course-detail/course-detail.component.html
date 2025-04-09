@@ -1,0 +1,207 @@
+<div class="course-detail-container">
+    <div class="page-header">
+      <div class="page-title-section">
+        <button mat-button color="primary" (click)="backToCourses()">
+          <mat-icon>arrow_back</mat-icon>
+          Quay lại
+        </button>
+        <h1 class="page-title" *ngIf="course">{{ course.name }}</h1>
+      </div>
+      <div class="page-actions" *ngIf="course">
+        <button mat-button color="primary" (click)="editCourse()">
+          <mat-icon>edit</mat-icon>
+          Chỉnh sửa
+        </button>
+      </div>
+    </div>
+    
+    <div class="loading-container" *ngIf="!course">
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+      <p>Đang tải thông tin khóa học...</p>
+    </div>
+    
+    <div class="course-content" *ngIf="course">
+      <mat-card class="course-info-card">
+        <mat-card-content>
+          <div class="course-header">
+            <div class="course-main-info">
+              <h2 class="course-name">{{ course.name }}</h2>
+              <p class="course-description">{{ course.description }}</p>
+              
+              <div class="course-meta">
+                <div class="meta-item">
+                  <mat-icon>school</mat-icon>
+                  <span>Lộ trình: {{ trainingPath?.name || 'Đang tải...' }}</span>
+                </div>
+                <div class="meta-item">
+                  <mat-icon>signal_cellular_alt</mat-icon>
+                  <span>Cấp độ: {{ getLevelLabel(course.level) }}</span>
+                </div>
+                <div class="meta-item">
+                  <mat-icon>schedule</mat-icon>
+                  <span>Thời gian: {{ course.duration }} tuần</span>
+                </div>
+                <div class="meta-item">
+                  <mat-icon>menu_book</mat-icon>
+                  <span>Số bài học: {{ course.totalLessons }} bài</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="course-status" [ngClass]="{'active': course.isActive, 'inactive': !course.isActive}">
+              {{ course.isActive ? 'Đang hoạt động' : 'Không hoạt động' }}
+            </div>
+          </div>
+          
+          <mat-divider></mat-divider>
+          
+          <div class="course-completion">
+            <div class="completion-header">
+              <h3>Tiến độ hoàn thành</h3>
+              <span class="completion-percentage">{{ getCompletionPercentage() | number:'1.0-0' }}%</span>
+            </div>
+            <mat-progress-bar mode="determinate" [value]="getCompletionPercentage()" color="primary"></mat-progress-bar>
+            <div class="completion-meta">
+              <span>{{ getPublishedLessonsCount() }}/{{ getLessonsCount() }} bài học đã xuất bản</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      
+      <mat-card class="lessons-card">
+        <mat-card-header>
+          <mat-card-title>Danh sách bài học</mat-card-title>
+          <button mat-raised-button color="primary" (click)="addNewLesson()" *ngIf="!selectedLesson">
+            <mat-icon>add</mat-icon>
+            Thêm bài học
+          </button>
+        </mat-card-header>
+        
+        <mat-card-content>
+          <!-- Form thêm/sửa bài học -->
+          <div class="lesson-form-container" *ngIf="selectedLesson !== null || isEditingLesson === false">
+            <h3>{{ isEditingLesson ? 'Chỉnh sửa bài học' : 'Thêm bài học mới' }}</h3>
+            
+            <form [formGroup]="lessonForm" (ngSubmit)="saveLesson()">
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Tiêu đề</mat-label>
+                  <input matInput formControlName="title" placeholder="Nhập tiêu đề bài học">
+                  <mat-error *ngIf="lessonForm.get('title')?.hasError('required')">
+                    Tiêu đề bài học là trường bắt buộc
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Mô tả</mat-label>
+                  <textarea matInput formControlName="description" placeholder="Nhập mô tả bài học" rows="2"></textarea>
+                  <mat-error *ngIf="lessonForm.get('description')?.hasError('required')">
+                    Mô tả là trường bắt buộc
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Nội dung</mat-label>
+                  <textarea matInput formControlName="content" placeholder="Nhập nội dung bài học" rows="5"></textarea>
+                  <mat-error *ngIf="lessonForm.get('content')?.hasError('required')">
+                    Nội dung là trường bắt buộc
+                  </mat-error>
+                </mat-form-field>
+              </div>
+              
+              <div class="form-row two-columns">
+                <mat-form-field appearance="outline">
+                  <mat-label>Thời lượng (phút)</mat-label>
+                  <input matInput type="number" formControlName="duration" min="1">
+                  <mat-error *ngIf="lessonForm.get('duration')?.hasError('required')">
+                    Thời lượng là trường bắt buộc
+                  </mat-error>
+                  <mat-error *ngIf="lessonForm.get('duration')?.hasError('min')">
+                    Thời lượng phải lớn hơn 0
+                  </mat-error>
+                </mat-form-field>
+                
+                <mat-form-field appearance="outline">
+                  <mat-label>Tài liệu</mat-label>
+                  <input matInput formControlName="materials" placeholder="Nhập danh sách tài liệu, cách nhau bởi dấu phẩy">
+                </mat-form-field>
+              </div>
+              
+              <div class="form-row">
+                <div class="status-toggle">
+                  <mat-slide-toggle formControlName="isPublished" color="primary">
+                    {{ lessonForm.get('isPublished')?.value ? 'Xuất bản' : 'Bản nháp' }}
+                  </mat-slide-toggle>
+                </div>
+              </div>
+              
+              <div class="form-actions">
+                <button type="button" mat-button (click)="cancelLessonEdit()">Hủy</button>
+                <button type="submit" mat-raised-button color="primary" [disabled]="lessonForm.invalid">
+                  {{ isEditingLesson ? 'Cập nhật' : 'Thêm mới' }}
+                </button>
+              </div>
+            </form>
+          </div>
+          
+          <!-- Danh sách bài học -->
+          <div class="lessons-list-container" *ngIf="selectedLesson === null">
+            <div *ngIf="!lessons || lessons.length === 0" class="no-lessons">
+              <p>Chưa có bài học nào. Hãy thêm bài học đầu tiên!</p>
+            </div>
+            
+            <mat-list class="lessons-list" *ngIf="lessons && lessons.length > 0">
+              <div class="lesson-item" *ngFor="let lesson of lessons; let i = index">
+                <div class="lesson-header" (click)="toggleLessonExpansion(lesson.id)">
+                  <div class="lesson-order">{{ lesson.order }}</div>
+                  <div class="lesson-info">
+                    <div class="lesson-title">{{ lesson.title }}</div>
+                    <div class="lesson-meta">
+                      <span class="lesson-duration">
+                        <mat-icon>schedule</mat-icon> {{ lesson.duration }} phút
+                      </span>
+                      <span class="lesson-status" [ngClass]="{'published': lesson.isPublished, 'draft': !lesson.isPublished}">
+                        {{ lesson.isPublished ? 'Đã xuất bản' : 'Bản nháp' }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="lesson-actions">
+                    <button mat-icon-button color="primary" (click)="editLesson(lesson); $event.stopPropagation()">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button (click)="toggleLessonStatus(lesson); $event.stopPropagation()">
+                      <mat-icon>{{ lesson.isPublished ? 'visibility_off' : 'visibility' }}</mat-icon>
+                    </button>
+                    <button mat-icon-button color="warn" (click)="deleteLesson(lesson.id); $event.stopPropagation()">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                    <mat-icon class="expand-icon">{{ expandedLessonId === lesson.id ? 'expand_less' : 'expand_more' }}</mat-icon>
+                  </div>
+                </div>
+                
+                <div class="lesson-details" *ngIf="expandedLessonId === lesson.id">
+                  <p class="lesson-description">{{ lesson.description }}</p>
+                  <mat-divider></mat-divider>
+                  <div class="lesson-content">
+                    <h4>Nội dung</h4>
+                    <p>{{ lesson.content }}</p>
+                  </div>
+                  
+                  <div class="lesson-materials" *ngIf="lesson.materials && lesson.materials.length > 0">
+                    <h4>Tài liệu</h4>
+                    <ul>
+                      <li *ngFor="let material of lesson.materials">{{ material }}</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </mat-list>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>

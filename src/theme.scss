@@ -1,0 +1,21 @@
+@use '@angular/material' as mat;
+@include mat.core();
+
+// Sử dụng color palette có sẵn từ Angular Material
+$staffdev-primary: mat.define-palette(mat.$blue-palette, 500);
+$staffdev-accent: mat.define-palette(mat.$light-blue-palette, A200, A100, A400);
+$staffdev-warn: mat.define-palette(mat.$red-palette);
+
+// Định nghĩa theme ánh sáng
+$staffdev-theme: mat.define-light-theme((
+  color: (
+    primary: $staffdev-primary,
+    accent: $staffdev-accent,
+    warn: $staffdev-warn,
+  ),
+  typography: mat.define-typography-config(),
+  density: 0,
+));
+
+// Áp dụng theme cho tất cả các components
+@include mat.all-component-themes($staffdev-theme);

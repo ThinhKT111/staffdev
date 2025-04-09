@@ -1,0 +1,6 @@
+<div class="loading-container" [class.overlay]="overlay">
+    <div class="loading-spinner">
+      <mat-spinner [diameter]="diameter" color="primary"></mat-spinner>
+    </div>
+    <div class="loading-text" *ngIf="message">{{ message }}</div>
+  </div>

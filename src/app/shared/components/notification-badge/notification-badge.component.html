@@ -1,0 +1,35 @@
+<button mat-icon-button [matMenuTriggerFor]="notificationMenu" class="notification-button">
+    <mat-icon [matBadge]="count" matBadgeColor="accent" [matBadgeHidden]="count === 0">notifications</mat-icon>
+  </button>
+  
+  <mat-menu #notificationMenu="matMenu" class="notification-menu">
+    <div class="notification-header">
+      <span class="notification-title">Thông báo</span>
+      <button mat-button color="primary" class="mark-all-read">Đánh dấu đã đọc</button>
+    </div>
+    
+    <mat-divider></mat-divider>
+    
+    <div class="notification-list" *ngIf="notifications.length > 0">
+      <div class="notification-item" *ngFor="let notification of notifications" [ngClass]="{'unread': !notification.read}">
+        <div class="notification-icon" [ngClass]="notification.type">
+          <mat-icon>{{ getIconForType(notification.type) }}</mat-icon>
+        </div>
+        <div class="notification-content">
+          <div class="notification-message">{{ notification.message }}</div>
+          <div class="notification-time">{{ notification.time }}</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="no-notifications" *ngIf="notifications.length === 0">
+      <mat-icon>notifications_off</mat-icon>
+      <span>Không có thông báo mới</span>
+    </div>
+    
+    <mat-divider *ngIf="notifications.length > 0"></mat-divider>
+    
+    <div class="notification-footer" *ngIf="notifications.length > 0">
+      <a mat-button color="primary" routerLink="/communication/notifications">Xem tất cả</a>
+    </div>
+  </mat-menu>

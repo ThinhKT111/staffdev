@@ -1,0 +1,47 @@
+.app-container {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+  
+  .sidenav-container {
+    flex: 1;
+    background-color: #f5f7fa;
+  }
+  
+  .app-sidenav {
+    width: 260px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    border-right: none;
+  }
+  
+  .main-content {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .content-container {
+    padding: 20px;
+    flex: 1;
+    overflow-y: auto;
+  }
+  
+  .main-content-wrapper {
+    margin-top: 20px;
+    padding-bottom: 20px;
+  }
+  
+  @media (max-width: 768px) {
+    .app-sidenav {
+      width: 220px;
+    }
+    
+    .content-container {
+      padding: 15px;
+    }
+  }
