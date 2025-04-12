@@ -1,3 +1,4 @@
+// src/app/core/services/training-path.service.ts
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { ApiBaseService } from './api-base.service';
@@ -13,9 +14,12 @@ export class TrainingPathService {
   private mockTrainingPaths: TrainingPath[] = [
     { 
       id: 1, 
-      name: 'Đào tạo nhân viên IT', 
+      title: 'Đào tạo nhân viên IT', 
+      name: 'Đào tạo nhân viên IT', // Giữ lại để tương thích với code cũ
       description: 'Lộ trình đào tạo cho nhân viên mới phòng IT',
       departmentId: 1,
+      duration: 'LongTerm',
+      createdBy: 1,
       totalCourses: 5,
       durationInWeeks: 8,
       isActive: true,
@@ -24,9 +28,12 @@ export class TrainingPathService {
     },
     { 
       id: 2, 
-      name: 'Đào tạo kỹ năng quản lý', 
+      title: 'Đào tạo kỹ năng quản lý', 
+      name: 'Đào tạo kỹ năng quản lý', // Giữ lại để tương thích với code cũ
       description: 'Lộ trình đào tạo cho các quản lý cấp trung',
       departmentId: 2,
+      duration: 'ShortTerm',
+      createdBy: 1,
       totalCourses: 3,
       durationInWeeks: 6,
       isActive: true,
@@ -35,9 +42,12 @@ export class TrainingPathService {
     },
     { 
       id: 3, 
-      name: 'Đào tạo nhân viên Sales', 
+      title: 'Đào tạo nhân viên Sales', 
+      name: 'Đào tạo nhân viên Sales', // Giữ lại để tương thích với code cũ
       description: 'Lộ trình đào tạo kỹ năng bán hàng',
       departmentId: 5,
+      duration: 'ShortTerm',
+      createdBy: 1,
       totalCourses: 4,
       durationInWeeks: 4,
       isActive: false,
@@ -69,8 +79,8 @@ export class TrainingPathService {
       createdAt: new Date(),
       updatedAt: new Date()
     };
-    this.mockTrainingPaths.push(newPath);
-    return of(newPath);
+    this.mockTrainingPaths.push(newPath as TrainingPath);
+    return of(newPath as TrainingPath);
     // return this.apiBaseService.post<TrainingPath>(this.endpoint, trainingPath);
   }
 

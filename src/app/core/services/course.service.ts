@@ -1,3 +1,4 @@
+// src/app/core/services/course.service.ts
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { ApiBaseService } from './api-base.service';
@@ -13,10 +14,13 @@ export class CourseService {
   private mockCourses: Course[] = [
     { 
       id: 1, 
-      name: 'Angular Fundamentals', 
+      title: 'Angular Fundamentals', 
+      name: 'Angular Fundamentals', // Giữ lại để tương thích với code cũ
       description: 'Khóa học cơ bản về Angular framework',
       trainingPathId: 1,
-      duration: 3,
+      type: 'Online',
+      durationHours: 24,
+      duration: 3, // Giữ lại để tương thích với code cũ
       level: 'beginner',
       totalLessons: 12,
       isActive: true,
@@ -25,10 +29,13 @@ export class CourseService {
     },
     { 
       id: 2, 
-      name: 'Advanced TypeScript', 
+      title: 'Advanced TypeScript', 
+      name: 'Advanced TypeScript', // Giữ lại để tương thích với code cũ
       description: 'Khóa học nâng cao về TypeScript',
       trainingPathId: 1,
-      duration: 2,
+      type: 'Video',
+      durationHours: 16,
+      duration: 2, // Giữ lại để tương thích với code cũ
       level: 'advanced',
       totalLessons: 8,
       isActive: true,
@@ -38,35 +45,14 @@ export class CourseService {
     { 
       id: 3, 
       name: 'Node.js Backend Development', 
+      title: 'Node.js Backend Development',
       description: 'Phát triển backend với Node.js',
       trainingPathId: 1,
+      type: 'Online',
+      durationHours: 32,
       duration: 4,
       level: 'intermediate',
       totalLessons: 15,
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    },
-    { 
-      id: 4, 
-      name: 'Kỹ năng quản lý nhóm', 
-      description: 'Khóa học về kỹ năng quản lý nhóm làm việc hiệu quả',
-      trainingPathId: 2,
-      duration: 2,
-      level: 'intermediate',
-      totalLessons: 10,
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    },
-    { 
-      id: 5, 
-      name: 'Kỹ năng giao tiếp', 
-      description: 'Khóa học về kỹ năng giao tiếp trong môi trường doanh nghiệp',
-      trainingPathId: 2,
-      duration: 1,
-      level: 'beginner',
-      totalLessons: 6,
       isActive: true,
       createdAt: new Date(),
       updatedAt: new Date()
@@ -102,8 +88,8 @@ export class CourseService {
       createdAt: new Date(),
       updatedAt: new Date()
     };
-    this.mockCourses.push(newCourse);
-    return of(newCourse);
+    this.mockCourses.push(newCourse as Course);
+    return of(newCourse as Course);
     // return this.apiBaseService.post<Course>(this.endpoint, course);
   }
 

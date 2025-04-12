@@ -1,0 +1,172 @@
+.task-detail-container {
+    padding: 20px 0;
+  }
+  
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .loading-message {
+    text-align: center;
+    padding: 40px 0;
+    color: rgba(0, 0, 0, 0.6);
+  }
+  
+  .task-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .task-info-card, .feedback-card, .feedback-form-card {
+    border-radius: 8px;
+  }
+  
+  .task-header {
+    margin-bottom: 20px;
+  }
+  
+  .task-title-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .task-title {
+    font-size: 24px;
+    font-weight: 500;
+    margin: 0;
+  }
+  
+  .status-chip {
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 14px;
+    font-weight: 500;
+    
+    &.status-completed {
+      background-color: rgba(76, 175, 80, 0.1);
+      color: #4caf50;
+    }
+    
+    &.status-in-progress {
+      background-color: rgba(3, 169, 244, 0.1);
+      color: #03a9f4;
+    }
+    
+    &.status-pending {
+      background-color: rgba(255, 152, 0, 0.1);
+      color: #ff9800;
+    }
+    
+    &.status-rejected {
+      background-color: rgba(244, 67, 54, 0.1);
+      color: #f44336;
+    }
+  }
+  
+  .task-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  
+  .meta-item {
+    display: flex;
+    align-items: center;
+    color: rgba(0, 0, 0, 0.6);
+    
+    mat-icon {
+      margin-right: 8px;
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+  }
+  
+  .task-description {
+    margin: 20px 0;
+    
+    h2 {
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
+    
+    p {
+      white-space: pre-line;
+      line-height: 1.5;
+    }
+  }
+  
+  .task-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+  }
+  
+  .feedback-content {
+    margin-top: 16px;
+    
+    h3 {
+      font-size: 16px;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    
+    p {
+      white-space: pre-line;
+      line-height: 1.5;
+    }
+  }
+  
+  .score-display {
+    display: flex;
+    align-items: center;
+    margin-top: 12px;
+    
+    .score-label {
+      font-weight: 500;
+      margin-right: 8px;
+    }
+    
+    .score-value {
+      font-size: 18px;
+      font-weight: 600;
+      color: #03a9f4;
+    }
+  }
+  
+  .form-row {
+    margin-bottom: 16px;
+  }
+  
+  .full-width {
+    width: 100%;
+  }
+  
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  @media (max-width: 768px) {
+    .task-title-section {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    
+    .task-meta {
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .task-actions {
+      flex-direction: column;
+    }
+  }

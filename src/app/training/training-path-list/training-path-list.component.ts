@@ -95,8 +95,8 @@ export class TrainingPathListComponent implements OnInit {
   applyFilter(event: Event): void {
     const filterValue = (event.target as HTMLInputElement).value.toLowerCase();
     this.filteredPaths = this.trainingPaths.filter(path => 
-      path.name.toLowerCase().includes(filterValue) || 
-      path.description.toLowerCase().includes(filterValue)
+      (path.name ?? path.title ?? '').toLowerCase().includes(filterValue) || 
+      (path.description ?? '').toLowerCase().includes(filterValue)
     );
   }
 

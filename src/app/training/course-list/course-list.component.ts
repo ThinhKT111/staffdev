@@ -112,7 +112,8 @@ export class CourseListComponent implements OnInit {
 
   getPathName(pathId: number): string {
     const path = this.trainingPaths.find(p => p.id === pathId);
-    return path ? path.name : 'Không xác định';
+    // Ưu tiên sử dụng title, sau đó đến name, cuối cùng là giá trị mặc định
+    return path ? (path.title ?? path.name ?? 'Không xác định') : 'Không xác định';
   }
 
   getLevelLabel(level: string): string {
@@ -127,8 +128,8 @@ export class CourseListComponent implements OnInit {
   applyFilter(event: Event): void {
     const filterValue = (event.target as HTMLInputElement).value.toLowerCase();
     this.filteredCourses = this.courses.filter(course => 
-      course.name.toLowerCase().includes(filterValue) || 
-      course.description.toLowerCase().includes(filterValue)
+      (course.name ?? course.title ?? '').toLowerCase().includes(filterValue) || 
+      (course.description ?? '').toLowerCase().includes(filterValue)
     );
   }
 

@@ -31,11 +31,11 @@
               <div class="course-meta">
                 <div class="meta-item">
                   <mat-icon>school</mat-icon>
-                  <span>Lộ trình: {{ trainingPath?.name || 'Đang tải...' }}</span>
+                  <span>Lộ trình: {{ trainingPath ? (trainingPath.name || trainingPath.title || 'Đang tải...') : 'Đang tải...' }}</span>
                 </div>
                 <div class="meta-item">
                   <mat-icon>signal_cellular_alt</mat-icon>
-                  <span>Cấp độ: {{ getLevelLabel(course.level) }}</span>
+                  <span>Lộ trình: {{ trainingPath ? (trainingPath.title || trainingPath.name || 'Không xác định') : 'Đang tải...' }}</span>
                 </div>
                 <div class="meta-item">
                   <mat-icon>schedule</mat-icon>

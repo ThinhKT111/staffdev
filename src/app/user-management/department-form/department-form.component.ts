@@ -66,7 +66,7 @@ export class DepartmentFormComponent implements OnInit {
       next: (users) => {
         this.managers = users.map(user => ({
           id: user.id,
-          name: `${user.firstName} ${user.lastName}`
+          name: user.fullName // Thay thế `${user.firstName} ${user.lastName}` bằng `user.fullName`
         }));
       },
       error: (err) => {

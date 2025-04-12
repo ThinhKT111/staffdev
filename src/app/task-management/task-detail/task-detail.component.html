@@ -1,0 +1,123 @@
+<div class="task-detail-container">
+    <div class="page-header">
+      <button mat-button color="primary" (click)="backToList()">
+        <mat-icon>arrow_back</mat-icon>
+        Quay lại
+      </button>
+      <div class="header-actions" *ngIf="task">
+        <button mat-raised-button color="primary" (click)="editTask()" *ngIf="isAdmin">
+          <mat-icon>edit</mat-icon>
+          Chỉnh sửa
+        </button>
+      </div>
+    </div>
+    
+    <div *ngIf="!task" class="loading-message">
+      <p>Đang tải thông tin nhiệm vụ...</p>
+    </div>
+    
+    <div *ngIf="task" class="task-content">
+      <mat-card class="task-info-card">
+        <mat-card-content>
+          <div class="task-header">
+            <div class="task-title-section">
+              <h1 class="task-title">{{ task.title }}</h1>
+              <div class="status-chip" [ngClass]="getStatusClass(task.status)">
+                {{ getStatusText(task.status) }}
+              </div>
+            </div>
+            
+            <div class="task-meta">
+              <div class="meta-item">
+                <mat-icon>person</mat-icon>
+                <span>Được giao cho: {{ getUserName(task.assignedTo) }}</span>
+              </div>
+              <div class="meta-item">
+                <mat-icon>person_outline</mat-icon>
+                <span>Người giao: {{ getUserName(task.assignedBy) }}</span>
+              </div>
+              <div class="meta-item">
+                <mat-icon>event</mat-icon>
+                <span>Hạn hoàn thành: {{ formatDate(task.deadline) }}</span>
+              </div>
+            </div>
+          </div>
+          
+          <mat-divider></mat-divider>
+          
+          <div class="task-description">
+            <h2>Mô tả</h2>
+            <p>{{ task.description }}</p>
+          </div>
+          
+          <div class="task-actions" *ngIf="isAssignedToCurrentUser && task.status === 'Pending'">
+            <button mat-raised-button color="primary" (click)="updateTaskStatus('InProgress')">
+              <mat-icon>play_arrow</mat-icon>
+              Bắt đầu thực hiện
+            </button>
+          </div>
+          
+          <div class="task-actions" *ngIf="isAssignedToCurrentUser && task.status === 'InProgress'">
+            <button mat-raised-button color="primary" (click)="updateTaskStatus('Completed')">
+              <mat-icon>check</mat-icon>
+              Đánh dấu hoàn thành
+            </button>
+            <button mat-raised-button color="warn" (click)="updateTaskStatus('Rejected')">
+              <mat-icon>close</mat-icon>
+              Từ chối nhiệm vụ
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      
+      <mat-card class="feedback-card" *ngIf="task.status === 'Completed' && task.feedback">
+        <mat-card-content>
+          <h2>Đánh giá</h2>
+          <div class="score-display">
+            <span class="score-label">Điểm:</span>
+            <span class="score-value">{{ task.score }}/100</span>
+          </div>
+          <div class="feedback-content">
+            <h3>Nhận xét:</h3>
+            <p>{{ task.feedback }}</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      
+      <mat-card class="feedback-form-card" *ngIf="isAdmin && task.status === 'Completed' && !task.feedback">
+        <mat-card-content>
+          <h2>Đánh giá nhiệm vụ</h2>
+          <form [formGroup]="feedbackForm" (ngSubmit)="submitFeedback()">
+            <div class="form-row">
+              <mat-form-field appearance="outline">
+                <mat-label>Điểm (0-100)</mat-label>
+                <input matInput type="number" formControlName="score" min="0" max="100">
+                <mat-error *ngIf="feedbackForm.get('score')?.hasError('required')">
+                  Điểm là trường bắt buộc
+                </mat-error>
+                <mat-error *ngIf="feedbackForm.get('score')?.hasError('min') || feedbackForm.get('score')?.hasError('max')">
+                  Điểm phải từ 0 đến 100
+                </mat-error>
+              </mat-form-field>
+            </div>
+            
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Nhận xét</mat-label>
+                <textarea matInput formControlName="feedback" rows="4"></textarea>
+                <mat-error *ngIf="feedbackForm.get('feedback')?.hasError('required')">
+                  Nhận xét là trường bắt buộc
+                </mat-error>
+              </mat-form-field>
+            </div>
+            
+            <div class="form-actions">
+              <button type="submit" mat-raised-button color="primary" [disabled]="feedbackForm.invalid">
+                Gửi đánh giá
+              </button>
+            </div>
+          </form>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>

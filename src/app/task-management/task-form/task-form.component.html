@@ -1,0 +1,77 @@
+<div class="task-form-container">
+    <div class="page-header">
+      <h1 class="page-title">{{ isEditMode ? 'Chỉnh sửa nhiệm vụ' : 'Giao nhiệm vụ mới' }}</h1>
+      <button mat-button color="primary" (click)="cancel()">
+        <mat-icon>arrow_back</mat-icon>
+        Quay lại
+      </button>
+    </div>
+    
+    <mat-card class="task-form-card">
+      <form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Tiêu đề</mat-label>
+            <input matInput formControlName="title" placeholder="Nhập tiêu đề nhiệm vụ">
+            <mat-error *ngIf="taskForm.get('title')?.hasError('required')">
+              Tiêu đề là trường bắt buộc
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Mô tả</mat-label>
+            <textarea matInput formControlName="description" placeholder="Nhập mô tả nhiệm vụ" rows="4"></textarea>
+            <mat-error *ngIf="taskForm.get('description')?.hasError('required')">
+              Mô tả là trường bắt buộc
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-row two-columns">
+          <mat-form-field appearance="outline">
+            <mat-label>Người thực hiện</mat-label>
+            <mat-select formControlName="assignedTo">
+              <mat-option *ngFor="let user of users" [value]="user.id">
+                {{ user.fullName }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="taskForm.get('assignedTo')?.hasError('required')">
+              Người thực hiện là trường bắt buộc
+            </mat-error>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline">
+            <mat-label>Hạn hoàn thành</mat-label>
+            <input matInput [matDatepicker]="deadlinePicker" formControlName="deadline">
+            <mat-datepicker-toggle matSuffix [for]="deadlinePicker"></mat-datepicker-toggle>
+            <mat-datepicker #deadlinePicker></mat-datepicker>
+            <mat-error *ngIf="taskForm.get('deadline')?.hasError('required')">
+              Hạn hoàn thành là trường bắt buộc
+            </mat-error>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-row" *ngIf="isEditMode">
+          <mat-form-field appearance="outline">
+            <mat-label>Trạng thái</mat-label>
+            <mat-select formControlName="status">
+              <mat-option *ngFor="let option of statusOptions" [value]="option.value">
+                {{ option.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        
+        <mat-divider class="form-divider"></mat-divider>
+        
+        <div class="form-actions">
+          <button type="button" mat-button (click)="cancel()">Hủy</button>
+          <button type="submit" mat-raised-button color="primary" [disabled]="taskForm.invalid">
+            {{ isEditMode ? 'Cập nhật' : 'Tạo mới' }}
+          </button>
+        </div>
+      </form>
+    </mat-card>
+  </div>

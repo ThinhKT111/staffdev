@@ -1,3 +1,4 @@
+// src/app/user-management/user-list/user-list.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -14,6 +15,10 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCardModule } from '@angular/material/card';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+
+import { UserService } from '../../core/services/user.service';
+import { User } from '../../core/models/user';
 
 
 @Component({
@@ -33,66 +38,79 @@ import { MatCardModule } from '@angular/material/card';
     MatMenuModule,
     MatChipsModule,
     MatTooltipModule,
-    MatCardModule
+    MatCardModule,
+    MatSnackBarModule
   ],
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.scss']
 })
 export class UserListComponent implements OnInit {
   displayedColumns: string[] = ['id', 'name', 'email', 'department', 'role', 'status', 'actions'];
-  dataSource: any[] = [];
+  dataSource: User[] = [];
+  filteredDataSource: User[] = [];
   searchControl = new FormControl('');
   totalUsers = 0;
   pageSize = 10;
   pageIndex = 0;
 
-  constructor() { }
+  constructor(
+    private userService: UserService,
+    private snackBar: MatSnackBar
+  ) { }
 
   ngOnInit(): void {
     this.loadUserData();
   }
 
   loadUserData() {
-    // Giả lập dữ liệu - sau này sẽ thay bằng API call thực
-    this.dataSource = [
-      { id: 1, firstName: 'Nguyễn', lastName: 'Văn A', email: 'nguyenvana@example.com', department: 'IT', role: 'Developer', isActive: true },
-      { id: 2, firstName: 'Trần', lastName: 'Thị B', email: 'tranthib@example.com', department: 'HR', role: 'Manager', isActive: true },
-      { id: 3, firstName: 'Lê', lastName: 'Văn C', email: 'levanc@example.com', department: 'Finance', role: 'Accountant', isActive: false },
-      { id: 4, firstName: 'Phạm', lastName: 'Thị D', email: 'phamthid@example.com', department: 'Marketing', role: 'Specialist', isActive: true },
-      { id: 5, firstName: 'Hoàng', lastName: 'Văn E', email: 'hoangvane@example.com', department: 'IT', role: 'Tester', isActive: true },
-      { id: 6, firstName: 'Đặng', lastName: 'Thị F', email: 'dangthif@example.com', department: 'Sales', role: 'Representative', isActive: true },
-      { id: 7, firstName: 'Vũ', lastName: 'Văn G', email: 'vuvang@example.com', department: 'IT', role: 'Project Manager', isActive: false },
-      { id: 8, firstName: 'Bùi', lastName: 'Thị H', email: 'buithih@example.com', department: 'HR', role: 'Recruiter', isActive: true },
-      { id: 9, firstName: 'Đỗ', lastName: 'Văn I', email: 'dovani@example.com', department: 'Finance', role: 'Analyst', isActive: true },
-      { id: 10, firstName: 'Ngô', lastName: 'Thị K', email: 'ngothik@example.com', department: 'Marketing', role: 'Designer', isActive: true },
-    ];
-    this.totalUsers = 100; // Giả định có 100 người dùng tổng cộng
+    this.userService.getUsers().subscribe({
+      next: (users) => {
+        this.dataSource = users;
+        this.filteredDataSource = users;
+        this.totalUsers = users.length;
+      },
+      error: (err) => {
+        console.error('Error loading users', err);
+        this.snackBar.open('Không thể tải danh sách người dùng', 'Đóng', { duration: 3000 });
+      }
+    });
   }
 
   applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    console.log('Filtering by:', filterValue);
-    // Implement filtering logic here
+    const filterValue = (event.target as HTMLInputElement).value.toLowerCase();
+    this.filteredDataSource = this.dataSource.filter(user =>
+      user.fullName.toLowerCase().includes(filterValue) ||
+      user.email.toLowerCase().includes(filterValue) ||
+      user.role.toLowerCase().includes(filterValue)
+    );
   }
 
   sortData(sort: Sort) {
-    console.log('Sorting by:', sort);
-    // Implement sorting logic here
+    // Implement sorting logic
   }
 
   handlePageEvent(event: PageEvent) {
-    console.log('Page event:', event);
     this.pageSize = event.pageSize;
     this.pageIndex = event.pageIndex;
-    // Implement pagination logic here
+    // Implement pagination logic
   }
 
-  getFullName(user: any): string {
-    return `${user.firstName} ${user.lastName}`;
+  getFullName(user: User): string {
+    return user.fullName;
   }
 
   deleteUser(id: number) {
-    console.log('Deleting user with ID:', id);
-    // Implement delete logic here
+    if (confirm('Bạn có chắc muốn xóa người dùng này?')) {
+      this.userService.deleteUser(id).subscribe({
+        next: () => {
+          this.snackBar.open('Xóa người dùng thành công', 'Đóng', { duration: 3000 });
+          this.loadUserData();
+        },
+        error: (err) => {
+          console.error('Error deleting user', err);
+          this.snackBar.open('Không thể xóa người dùng', 'Đóng', { duration: 3000 });
+        }
+      });
+    }
   }
 }

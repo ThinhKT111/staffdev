@@ -1,59 +1,90 @@
-# Staffdev
+Routes trong Dự Án StaffDev
+Cấu Trúc Route Chính
+Dự án sử dụng Angular Router với các nhóm route chính được định nghĩa trong src/app/app.routes.ts:
+1. Nhóm Route Xác Thực (Auth)
+File: src/app/auth/auth.routes.ts
+typescript/auth/login           // Trang đăng nhập
+/auth/register        // Trang đăng ký
+/auth/forgot-password // Trang quên mật khẩu
+/auth/reset-password  // Trang đặt lại mật khẩu
+2. Route Dashboard
+File: src/app/dashboard/dashboard.routes.ts
+typescript/dashboard            // Trang chủ dashboard
+3. Quản Lý Nhân Viên
+File: src/app/user-management/user-management.routes.ts
+typescript/users/list           // Danh sách nhân viên
+/users/create         // Tạo nhân viên mới
+/users/edit/:id       // Chỉnh sửa nhân viên
+/users/detail/:id     // Chi tiết nhân viên
+/users/departments    // Quản lý phòng ban
+/users/roles          // Quản lý vai trò
+/users/timesheet      // Chấm công
+4. Quản Lý Đào Tạo
+File: src/app/training/training.routes.ts
+typescript/training/paths                 // Danh sách lộ trình đào tạo
+/training/paths/create          // Tạo lộ trình mới
+/training/paths/edit/:id        // Chỉnh sửa lộ trình
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.6.
+/training/courses               // Danh sách khóa học
+/training/courses/create        // Tạo khóa học mới
+/training/courses/edit/:id      // Chỉnh sửa khóa học
+/training/courses/:id           // Chi tiết khóa học
 
-## Development server
+/training/assignments           // Bài tập và nhiệm vụ
+/training/documents             // Tài liệu
+5. Giao Tiếp
+File: src/app/communication/communication.routes.ts
+typescript/communication/notifications    // Thông báo
+/communication/forum            // Diễn đàn
+Điều Hướng Mặc Định
+Trong src/app/app.routes.ts, các route được cấu hình như sau:
 
-To start a local development server, run:
+Mặc định sẽ chuyển hướng đến /dashboard
+Nếu route không tồn tại sẽ chuyển hướng về /dashboard
 
-```bash
-ng serve
-```
+Cấu Trúc Routing Chi Tiết
+Lazy Loading
+Các module được sử dụng kỹ thuật Lazy Loading để tối ưu hiệu năng:
+typescript{
+  path: 'auth',
+  loadChildren: () => import('./auth/auth.routes').then(m => m.AUTH_ROUTES)
+},
+{
+  path: 'dashboard',
+  loadChildren: () => import('./dashboard/dashboard.routes').then(m => m.DASHBOARD_ROUTES)
+},
+// Tương tự cho các module khác
+Lưu Ý
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Tất cả các route đều sử dụng standalone components
+Dữ liệu hiện tại là mock data
+Chưa có kết nối backend thực
 
-## Code scaffolding
+Hướng Phát Triển
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Tích hợp authentication guard
+Xây dựng hệ thống phân quyền chi tiết
+Kết nối backend thực
 
-```bash
-ng generate component component-name
-```
+Kiểm Tra Routes
+Để kiểm tra các route:
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Chạy ng serve
+Truy cập http://localhost:4200
+Sử dụng trình duyệt để điều hướng
 
-```bash
-ng generate --help
-```
+Bảo Mật
+⚠️ Hiện tại:
 
-## Building
+Chưa có hệ thống xác thực mạnh
+Đang sử dụng mock login
+Chưa có phân quyền chi tiết
 
-To build the project run:
+Yêu Cầu
 
-```bash
-ng build
-```
+Node.js 18+
+Angular CLI 19+
+Trình duyệt hiện đại
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Hỗ Trợ
+Liên hệ quản trị viên để được hỗ trợ chi tiết về hệ thống routes.

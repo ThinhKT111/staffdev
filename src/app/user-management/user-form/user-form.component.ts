@@ -1,3 +1,4 @@
+// src/app/user-management/user-form/user-form.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -13,6 +14,12 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+
+import { UserService } from '../../core/services/user.service';
+import { DepartmentService } from '../../core/services/department.service';
+import { User } from '../../core/models/user';
+import { Department } from '../../core/models/department';
 
 @Component({
   selector: 'app-user-form',
@@ -30,7 +37,8 @@ import { MatDividerModule } from '@angular/material/divider';
     MatSlideToggleModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatDividerModule
+    MatDividerModule,
+    MatSnackBarModule
   ],
   templateUrl: './user-form.component.html',
   styleUrls: ['./user-form.component.scss']
@@ -39,42 +47,37 @@ export class UserFormComponent implements OnInit {
   userForm: FormGroup;
   isEditMode = false;
   userId: number | null = null;
+  departments: Department[] = [];
   
   roles = [
-    { id: 1, name: 'Admin' },
-    { id: 2, name: 'Manager' },
-    { id: 3, name: 'Developer' },
-    { id: 4, name: 'Tester' },
-    { id: 5, name: 'HR' }
-  ];
-  
-  departments = [
-    { id: 1, name: 'IT' },
-    { id: 2, name: 'HR' },
-    { id: 3, name: 'Finance' },
-    { id: 4, name: 'Marketing' },
-    { id: 5, name: 'Sales' }
+    { value: 'Admin', label: 'Admin' },
+    { value: 'TeamLeader', label: 'Trưởng nhóm' },
+    { value: 'SeniorManager', label: 'Quản lý cấp cao' },
+    { value: 'Employee', label: 'Nhân viên' }
   ];
 
   constructor(
     private fb: FormBuilder,
+    private userService: UserService,
+    private departmentService: DepartmentService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private snackBar: MatSnackBar
   ) {
     this.userForm = this.fb.group({
-      firstName: ['', [Validators.required]],
-      lastName: ['', [Validators.required]],
+      cccd: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(12)]],
+      fullName: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
-      idNumber: ['', [Validators.required]],
-      roleId: ['', [Validators.required]],
-      departmentId: ['', [Validators.required]],
-      joinDate: [new Date(), [Validators.required]],
-      phoneNumber: ['', [Validators.pattern(/^\d{10}$/)]],
+      phone: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
+      role: ['Employee', [Validators.required]],
+      departmentId: [null, [Validators.required]],
       isActive: [true]
     });
   }
 
   ngOnInit(): void {
+    this.loadDepartments();
+    
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.isEditMode = true;
@@ -83,41 +86,65 @@ export class UserFormComponent implements OnInit {
     }
   }
 
-  loadUserData(id: number) {
-    // Giả lập tải dữ liệu người dùng - sau này sẽ thay bằng API call thực
-    if (id === 1) {
-      this.userForm.patchValue({
-        firstName: 'Nguyễn',
-        lastName: 'Văn A',
-        email: 'nguyenvana@example.com',
-        idNumber: '034095000123',
-        roleId: 3,
-        departmentId: 1,
-        joinDate: new Date('2023-01-15'),
-        phoneNumber: '0912345678',
-        isActive: true
-      });
-    }
-  }
-
-  onSubmit() {
-    if (this.userForm.valid) {
-      console.log('Form submitted:', this.userForm.value);
-      
-      if (this.isEditMode) {
-        // Implement update user logic
-        console.log(`Updating user ${this.userId} with data:`, this.userForm.value);
-      } else {
-        // Implement create user logic
-        console.log('Creating new user with data:', this.userForm.value);
+  loadDepartments(): void {
+    this.departmentService.getDepartments().subscribe({
+      next: (departments) => {
+        this.departments = departments;
+      },
+      error: (err) => {
+        console.error('Error loading departments', err);
+        this.snackBar.open('Không thể tải danh sách phòng ban', 'Đóng', { duration: 3000 });
       }
-      
-      // Navigate back to user list after save
-      this.router.navigate(['/users/list']);
+    });
+  }
+
+  loadUserData(id: number): void {
+    this.userService.getUserById(id).subscribe({
+      next: (user) => {
+        // Xóa các trường không thuộc form
+        const { createdAt, updatedAt, id, password, ...formData } = user;
+        this.userForm.patchValue(formData);
+      },
+      error: (err) => {
+        console.error('Error loading user', err);
+        this.snackBar.open('Không thể tải thông tin người dùng', 'Đóng', { duration: 3000 });
+        this.router.navigate(['/users']);
+      }
+    });
+  }
+
+  onSubmit(): void {
+    if (this.userForm.valid) {
+      if (this.isEditMode && this.userId) {
+        this.userService.updateUser(this.userId, this.userForm.value).subscribe({
+          next: () => {
+            this.snackBar.open('Cập nhật người dùng thành công', 'Đóng', { duration: 3000 });
+            this.router.navigate(['/users']);
+          },
+          error: (err) => {
+            console.error('Error updating user', err);
+            this.snackBar.open('Không thể cập nhật người dùng', 'Đóng', { duration: 3000 });
+          }
+        });
+      } else {
+        // Thêm password mặc định khi tạo mới
+        const userData = { ...this.userForm.value, password: 'password123' };
+        
+        this.userService.createUser(userData).subscribe({
+          next: () => {
+            this.snackBar.open('Thêm người dùng mới thành công', 'Đóng', { duration: 3000 });
+            this.router.navigate(['/users']);
+          },
+          error: (err) => {
+            console.error('Error creating user', err);
+            this.snackBar.open('Không thể thêm người dùng mới', 'Đóng', { duration: 3000 });
+          }
+        });
+      }
     }
   }
 
-  cancel() {
-    this.router.navigate(['/users/list']);
+  cancel(): void {
+    this.router.navigate(['/users']);
   }
 }

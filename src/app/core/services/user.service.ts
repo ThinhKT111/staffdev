@@ -1,19 +1,8 @@
+// src/app/core/services/user.service.ts
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { ApiBaseService } from './api-base.service';
-
-// Define User interface if not already defined
-export interface User {
-  id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  roleId: number;
-  departmentId: number;
-  isActive: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { User } from '../models/user';
 
 @Injectable({
   providedIn: 'root'
@@ -23,8 +12,28 @@ export class UserService {
 
   // Mock data - will be removed when connecting to real API
   private mockUsers: User[] = [
-    { id: 1, firstName: 'Nguyễn', lastName: 'Văn A', email: 'nguyenvana@example.com', roleId: 3, departmentId: 1, isActive: true, createdAt: new Date(), updatedAt: new Date() },
-    { id: 2, firstName: 'Trần', lastName: 'Thị B', email: 'tranthib@example.com', roleId: 2, departmentId: 2, isActive: true, createdAt: new Date(), updatedAt: new Date() }
+    { 
+      id: 1, 
+      cccd: '034095000123',
+      email: 'nguyenvana@example.com', 
+      phone: '0912345678',
+      fullName: 'Nguyễn Văn A', 
+      role: 'TeamLeader', 
+      departmentId: 1, 
+      createdAt: new Date(), 
+      updatedAt: new Date() 
+    },
+    { 
+      id: 2, 
+      cccd: '034095000124',
+      email: 'tranthib@example.com', 
+      phone: '0912345679',
+      fullName: 'Trần Thị B', 
+      role: 'Employee', 
+      departmentId: 2, 
+      createdAt: new Date(), 
+      updatedAt: new Date() 
+    }
   ];
 
   constructor(private apiBaseService: ApiBaseService) { }

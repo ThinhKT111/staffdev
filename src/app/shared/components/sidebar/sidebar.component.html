@@ -72,5 +72,15 @@
         <mat-icon class="menu-icon">schedule</mat-icon>
         <span class="menu-text">Chấm công</span>
       </a>
+
+      <a mat-list-item routerLink="/tasks/list" routerLinkActive="active-menu-item" class="menu-item">
+        <mat-icon class="menu-icon">assignment</mat-icon>
+        <span class="menu-text">Danh sách nhiệm vụ</span>
+      </a>
+      
+      <a mat-list-item routerLink="/tasks/create" routerLinkActive="active-menu-item" class="menu-item" *ngIf="isAdmin">
+        <mat-icon class="menu-icon">add_task</mat-icon>
+        <span class="menu-text">Giao nhiệm vụ</span>
+      </a>
     </div>
   </div>

@@ -45,8 +45,8 @@ export class DepartmentService {
       createdAt: new Date(),
       updatedAt: new Date()
     };
-    this.mockDepartments.push(newDepartment);
-    return of(newDepartment);
+    this.mockDepartments.push(newDepartment as Department);
+    return of(newDepartment as Department);
     // return this.apiBaseService.post<Department>(this.endpoint, department);
   }
 
