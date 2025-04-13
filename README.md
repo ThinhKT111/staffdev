@@ -1,90 +1,142 @@
-Routes trong Dự Án StaffDev
-Cấu Trúc Route Chính
-Dự án sử dụng Angular Router với các nhóm route chính được định nghĩa trong src/app/app.routes.ts:
-1. Nhóm Route Xác Thực (Auth)
-File: src/app/auth/auth.routes.ts
-typescript/auth/login           // Trang đăng nhập
-/auth/register        // Trang đăng ký
-/auth/forgot-password // Trang quên mật khẩu
-/auth/reset-password  // Trang đặt lại mật khẩu
-2. Route Dashboard
-File: src/app/dashboard/dashboard.routes.ts
-typescript/dashboard            // Trang chủ dashboard
-3. Quản Lý Nhân Viên
-File: src/app/user-management/user-management.routes.ts
-typescript/users/list           // Danh sách nhân viên
-/users/create         // Tạo nhân viên mới
-/users/edit/:id       // Chỉnh sửa nhân viên
-/users/detail/:id     // Chi tiết nhân viên
-/users/departments    // Quản lý phòng ban
-/users/roles          // Quản lý vai trò
-/users/timesheet      // Chấm công
-4. Quản Lý Đào Tạo
-File: src/app/training/training.routes.ts
-typescript/training/paths                 // Danh sách lộ trình đào tạo
-/training/paths/create          // Tạo lộ trình mới
-/training/paths/edit/:id        // Chỉnh sửa lộ trình
+# StaffDev - Hệ thống Quản lý và Phát triển Nhân viên
 
-/training/courses               // Danh sách khóa học
-/training/courses/create        // Tạo khóa học mới
-/training/courses/edit/:id      // Chỉnh sửa khóa học
-/training/courses/:id           // Chi tiết khóa học
+## Giới thiệu
+StaffDev là một ứng dụng web được xây dựng bằng Angular dành cho quản lý và phát triển nhân viên trong doanh nghiệp. Hệ thống cung cấp các tính năng quản lý nhân viên, đào tạo, tài liệu, điểm danh và diễn đàn thảo luận.
 
-/training/assignments           // Bài tập và nhiệm vụ
-/training/documents             // Tài liệu
-5. Giao Tiếp
-File: src/app/communication/communication.routes.ts
-typescript/communication/notifications    // Thông báo
-/communication/forum            // Diễn đàn
-Điều Hướng Mặc Định
-Trong src/app/app.routes.ts, các route được cấu hình như sau:
+## Các tính năng chính
 
-Mặc định sẽ chuyển hướng đến /dashboard
-Nếu route không tồn tại sẽ chuyển hướng về /dashboard
+1. **Quản lý người dùng và phòng ban**
+   - Quản lý thông tin nhân viên
+   - Quản lý hồ sơ cá nhân
+   - Quản lý phòng ban
 
-Cấu Trúc Routing Chi Tiết
-Lazy Loading
-Các module được sử dụng kỹ thuật Lazy Loading để tối ưu hiệu năng:
-typescript{
-  path: 'auth',
-  loadChildren: () => import('./auth/auth.routes').then(m => m.AUTH_ROUTES)
-},
-{
-  path: 'dashboard',
-  loadChildren: () => import('./dashboard/dashboard.routes').then(m => m.DASHBOARD_ROUTES)
-},
-// Tương tự cho các module khác
-Lưu Ý
+2. **Đào tạo và phát triển nhân viên**
+   - Quản lý lộ trình đào tạo
+   - Quản lý khóa học và bài học
+   - Quản lý tài liệu đào tạo
 
-Tất cả các route đều sử dụng standalone components
-Dữ liệu hiện tại là mock data
-Chưa có kết nối backend thực
+3. **Quản lý nhiệm vụ**
+   - Giao nhiệm vụ
+   - Theo dõi tiến độ
+   - Đánh giá nhiệm vụ
 
-Hướng Phát Triển
+4. **Điểm danh và nghỉ phép**
+   - Chấm công hàng ngày
+   - Quản lý nghỉ phép
+   - Thống kê giờ làm việc
 
-Tích hợp authentication guard
-Xây dựng hệ thống phân quyền chi tiết
-Kết nối backend thực
+5. **Diễn đàn thảo luận**
+   - Tạo và tham gia các bài viết
+   - Bình luận và trao đổi
+   - Chia sẻ kiến thức
 
-Kiểm Tra Routes
-Để kiểm tra các route:
+## Cấu trúc thư mục
 
-Chạy ng serve
-Truy cập http://localhost:4200
-Sử dụng trình duyệt để điều hướng
+```
+src/
+├── app/
+│   ├── auth/                  # Module xác thực
+│   ├── communication/         # Module giao tiếp (Diễn đàn, Thông báo)
+│   ├── core/                  # Services, Models, Guards
+│   ├── dashboard/             # Module dashboard
+│   ├── shared/                # Components dùng chung
+│   ├── task-management/       # Module quản lý nhiệm vụ
+│   ├── training/              # Module đào tạo
+│   └── user-management/       # Module quản lý người dùng
+```
 
-Bảo Mật
-⚠️ Hiện tại:
+## Cấu trúc cơ sở dữ liệu
 
-Chưa có hệ thống xác thực mạnh
-Đang sử dụng mock login
-Chưa có phân quyền chi tiết
+### Bảng dữ liệu chính:
+- **Users**: Thông tin người dùng
+- **Departments**: Phòng ban
+- **Profiles**: Hồ sơ nhân viên
+- **Attendance**: Điểm danh
+- **TrainingPaths**: Lộ trình đào tạo
+- **TrainingCourses**: Khóa học
+- **UserCourses**: Khóa học của người dùng
+- **Tasks**: Nhiệm vụ
+- **Documents**: Tài liệu
+- **ForumPosts**: Bài đăng diễn đàn
+- **ForumComments**: Bình luận diễn đàn
 
-Yêu Cầu
+## Các tính năng đã triển khai
 
-Node.js 18+
-Angular CLI 19+
-Trình duyệt hiện đại
+### Quản lý người dùng
+- [x] Danh sách người dùng và bộ lọc
+- [x] Thêm, sửa, xóa người dùng
+- [x] Hồ sơ chi tiết nhân viên
+- [x] Quản lý phòng ban
 
-Hỗ Trợ
-Liên hệ quản trị viên để được hỗ trợ chi tiết về hệ thống routes.
+### Đào tạo
+- [x] Quản lý lộ trình đào tạo
+- [x] Quản lý khóa học
+- [x] Quản lý bài học
+- [x] Quản lý tài liệu đào tạo
+
+### Nhiệm vụ
+- [x] Giao nhiệm vụ và theo dõi tiến độ
+- [x] Cập nhật trạng thái nhiệm vụ
+- [x] Đánh giá và phản hồi
+
+### Điểm danh
+- [x] Điểm danh vào/ra ca
+- [x] Yêu cầu nghỉ phép
+- [x] Thống kê giờ làm việc
+- [x] Duyệt nghỉ phép
+
+### Diễn đàn
+- [x] Danh sách bài viết và tìm kiếm
+- [x] Tạo và chỉnh sửa bài viết
+- [x] Bình luận bài viết
+- [x] Xóa bài viết và bình luận
+
+## Các tính năng cần phát triển thêm
+
+### Thông báo
+- [ ] Hiển thị thông báo
+- [ ] Đánh dấu đã đọc
+- [ ] Thông báo thời gian thực
+
+### Thống kê và báo cáo
+- [ ] Thống kê đào tạo
+- [ ] Báo cáo nhiệm vụ
+- [ ] Thống kê chấm công
+- [ ] Biểu đồ tổng quan
+
+### Tích hợp
+- [ ] Tích hợp API thực
+- [ ] Upload file/hình ảnh
+- [ ] Xuất báo cáo (PDF, Excel)
+
+## Môi trường phát triển
+
+- Node.js 18+
+- Angular 19+
+- Angular Material
+
+## Hướng dẫn cài đặt
+
+1. Clone dự án
+   ```bash
+   git clone [repository-url]
+   ```
+
+2. Cài đặt các thư viện
+   ```bash
+   npm install
+   ```
+
+3. Chạy ứng dụng
+   ```bash
+   ng serve
+   ```
+
+4. Mở trình duyệt và truy cập
+   ```
+   http://localhost:4200
+   ```
+
+## Thông tin đăng nhập mẫu
+- **Admin**: cccd=034095000123, password=password
+- **Nhân viên**: cccd=034095000124, password=password

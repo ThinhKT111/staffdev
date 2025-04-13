@@ -1,57 +1,57 @@
 <mat-toolbar class="header-toolbar" color="primary">
-    <button mat-icon-button (click)="onToggleSidebar()" class="menu-button">
-      <mat-icon>menu</mat-icon>
+  <button mat-icon-button (click)="onToggleSidebar()" class="menu-button">
+    <mat-icon>menu</mat-icon>
+  </button>
+  
+  <div class="logo-container">
+    <div class="logo-icon">
+      <mat-icon>school</mat-icon>
+    </div>
+    <span class="logo-text">StaffDev</span>
+  </div>
+  
+  <span class="spacer"></span>
+  
+  <div class="header-actions">
+    <button mat-icon-button class="action-button">
+      <mat-icon>search</mat-icon>
     </button>
     
-    <div class="logo-container">
-      <div class="logo-icon">
-        <mat-icon>school</mat-icon>
-      </div>
-      <span class="logo-text">StaffDev</span>
-    </div>
+    <app-notification-badge [count]="3"></app-notification-badge>
     
-    <span class="spacer"></span>
+    <button mat-icon-button class="action-button">
+      <mat-icon>help_outline</mat-icon>
+    </button>
     
-    <div class="header-actions">
-      <button mat-icon-button class="action-button">
-        <mat-icon>search</mat-icon>
-      </button>
-      
-      <app-notification-badge [count]="3"></app-notification-badge>
-      
-      <button mat-icon-button class="action-button">
-        <mat-icon>help_outline</mat-icon>
-      </button>
-      
-      <button mat-button [matMenuTriggerFor]="userMenu" class="user-button">
-        <div class="user-avatar">JD</div>
-        <span class="user-name">John Doe</span>
-        <mat-icon>arrow_drop_down</mat-icon>
-      </button>
-      <mat-menu #userMenu="matMenu" class="user-menu">
-        <div class="user-menu-header">
-          <div class="user-info">
-            <div class="user-avatar-large">JD</div>
-            <div class="user-details">
-              <div class="user-name-large">John Doe</div>
-              <div class="user-role">Administrator</div>
-            </div>
+    <button mat-button [matMenuTriggerFor]="userMenu" class="user-button">
+      <div class="user-avatar">JD</div>
+      <span class="user-name">John Doe</span>
+      <mat-icon>arrow_drop_down</mat-icon>
+    </button>
+    <mat-menu #userMenu="matMenu" class="user-menu">
+      <div class="user-menu-header">
+        <div class="user-info">
+          <div class="user-avatar-large">JD</div>
+          <div class="user-details">
+            <div class="user-name-large">John Doe</div>
+            <div class="user-role">Administrator</div>
           </div>
         </div>
-        <mat-divider></mat-divider>
-        <button mat-menu-item>
-          <mat-icon>person</mat-icon>
-          <span>Hồ sơ của tôi</span>
-        </button>
-        <button mat-menu-item>
-          <mat-icon>settings</mat-icon>
-          <span>Cài đặt</span>
-        </button>
-        <mat-divider></mat-divider>
-        <button mat-menu-item>
-          <mat-icon>exit_to_app</mat-icon>
-          <span>Đăng xuất</span>
-        </button>
-      </mat-menu>
-    </div>
-  </mat-toolbar>
+      </div>
+      <mat-divider></mat-divider>
+      <button mat-menu-item routerLink="/users/profile">
+        <mat-icon>person</mat-icon>
+        <span>Hồ sơ của tôi</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>settings</mat-icon>
+        <span>Cài đặt</span>
+      </button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item>
+        <mat-icon>exit_to_app</mat-icon>
+        <span>Đăng xuất</span>
+      </button>
+    </mat-menu>
+  </div>
+</mat-toolbar>

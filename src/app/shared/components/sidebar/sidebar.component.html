@@ -1,86 +1,86 @@
 <div class="sidebar-container">
-    <div class="sidebar-user">
-      <div class="user-avatar">JD</div>
-      <div class="user-info">
-        <div class="user-name">John Doe</div>
-        <div class="user-role">Administrator</div>
-      </div>
-    </div>
-    
-    <mat-divider></mat-divider>
-    
-    <div class="sidebar-menu">
-      <div class="menu-label">Main</div>
-      
-      <a mat-list-item routerLink="/dashboard" routerLinkActive="active-menu-item" class="menu-item">
-        <mat-icon class="menu-icon">dashboard</mat-icon>
-        <span class="menu-text">Dashboard</span>
-      </a>
-      
-      <a mat-list-item routerLink="/users" routerLinkActive="active-menu-item" class="menu-item">
-        <mat-icon class="menu-icon">people</mat-icon>
-        <span class="menu-text">Quản lý nhân viên</span>
-      </a>
-      
-      <div class="menu-label">Đào tạo</div>
-      
-      <a mat-list-item routerLink="/training/paths" routerLinkActive="active-menu-item" class="menu-item">
-        <mat-icon class="menu-icon">timeline</mat-icon>
-        <span class="menu-text">Lộ trình đào tạo</span>
-      </a>
-      
-      <a mat-list-item routerLink="/training/courses" routerLinkActive="active-menu-item" class="menu-item">
-        <mat-icon class="menu-icon">school</mat-icon>
-        <span class="menu-text">Khóa học</span>
-      </a>
-      
-      <a mat-list-item routerLink="/training/assignments" routerLinkActive="active-menu-item" class="menu-item">
-        <mat-icon class="menu-icon">assignment</mat-icon>
-        <span class="menu-text">Bài tập & Nhiệm vụ</span>
-      </a>
-      
-      <a mat-list-item routerLink="/training/documents" routerLinkActive="active-menu-item" class="menu-item">
-        <mat-icon class="menu-icon">book</mat-icon>
-        <span class="menu-text">Tài liệu</span>
-      </a>
-      
-      <div class="menu-label">Giao tiếp</div>
-      
-      <a mat-list-item routerLink="/communication/notifications" routerLinkActive="active-menu-item" class="menu-item">
-        <mat-icon class="menu-icon">notifications</mat-icon>
-        <span class="menu-text">Thông báo</span>
-      </a>
-      
-      <a mat-list-item routerLink="/communication/forum" routerLinkActive="active-menu-item" class="menu-item">
-        <mat-icon class="menu-icon">forum</mat-icon>
-        <span class="menu-text">Diễn đàn</span>
-      </a>
-      
-      <div class="menu-label">Quản lý</div>
-      
-      <a mat-list-item routerLink="/users/departments" routerLinkActive="active-menu-item" class="menu-item">
-        <mat-icon class="menu-icon">business</mat-icon>
-        <span class="menu-text">Phòng ban</span>
-      </a>
-      
-      <a mat-list-item routerLink="/users/roles" routerLinkActive="active-menu-item" class="menu-item">
-        <mat-icon class="menu-icon">verified_user</mat-icon>
-        <span class="menu-text">Vai trò & Quyền hạn</span>
-      </a>
-      
-      <a mat-list-item routerLink="/users/timesheet" routerLinkActive="active-menu-item" class="menu-item">
-        <mat-icon class="menu-icon">schedule</mat-icon>
-        <span class="menu-text">Chấm công</span>
-      </a>
-
-      <a mat-list-item routerLink="/tasks/list" routerLinkActive="active-menu-item" class="menu-item">
-        <mat-icon class="menu-icon">assignment</mat-icon>
-        <span class="menu-text">Danh sách nhiệm vụ</span>
-      </a>
-      
-      <a mat-list-item routerLink="/tasks/create" routerLinkActive="active-menu-item" class="menu-item" *ngIf="isAdmin">
-        <mat-icon class="menu-icon">add_task</mat-icon>
-        <span class="menu-text">Giao nhiệm vụ</span>
-      </a>
+  <div class="sidebar-user">
+    <div class="user-avatar">JD</div>
+    <div class="user-info">
+      <div class="user-name">John Doe</div>
+      <div class="user-role">Administrator</div>
     </div>
   </div>
+  
+  <mat-divider></mat-divider>
+  
+  <div class="sidebar-menu">
+    <div class="menu-label">Main</div>
+    
+    <a mat-list-item routerLink="/dashboard" routerLinkActive="active-menu-item" class="menu-item">
+      <mat-icon class="menu-icon">dashboard</mat-icon>
+      <span class="menu-text">Dashboard</span>
+    </a>
+    
+    <a mat-list-item routerLink="/users" routerLinkActive="active-menu-item" class="menu-item">
+      <mat-icon class="menu-icon">people</mat-icon>
+      <span class="menu-text">Quản lý nhân viên</span>
+    </a>
+    
+    <a mat-list-item routerLink="/users/attendance" routerLinkActive="active-menu-item" class="menu-item">
+      <mat-icon class="menu-icon">schedule</mat-icon>
+      <span class="menu-text">Chấm công</span>
+    </a>
+    
+    <div class="menu-label">Đào tạo</div>
+    
+    <a mat-list-item routerLink="/training/paths" routerLinkActive="active-menu-item" class="menu-item">
+      <mat-icon class="menu-icon">timeline</mat-icon>
+      <span class="menu-text">Lộ trình đào tạo</span>
+    </a>
+    
+    <a mat-list-item routerLink="/training/courses" routerLinkActive="active-menu-item" class="menu-item">
+      <mat-icon class="menu-icon">school</mat-icon>
+      <span class="menu-text">Khóa học</span>
+    </a>
+    
+    <a mat-list-item routerLink="/training/assignments" routerLinkActive="active-menu-item" class="menu-item">
+      <mat-icon class="menu-icon">assignment</mat-icon>
+      <span class="menu-text">Bài tập & Nhiệm vụ</span>
+    </a>
+    
+    <a mat-list-item routerLink="/training/documents" routerLinkActive="active-menu-item" class="menu-item">
+      <mat-icon class="menu-icon">book</mat-icon>
+      <span class="menu-text">Tài liệu</span>
+    </a>
+    
+    <div class="menu-label">Giao tiếp</div>
+    
+    <a mat-list-item routerLink="/communication/notifications" routerLinkActive="active-menu-item" class="menu-item">
+      <mat-icon class="menu-icon">notifications</mat-icon>
+      <span class="menu-text">Thông báo</span>
+    </a>
+    
+    <a mat-list-item routerLink="/communication/forum" routerLinkActive="active-menu-item" class="menu-item">
+      <mat-icon class="menu-icon">forum</mat-icon>
+      <span class="menu-text">Diễn đàn</span>
+    </a>
+    
+    <div class="menu-label">Quản lý</div>
+    
+    <a mat-list-item routerLink="/users/departments" routerLinkActive="active-menu-item" class="menu-item">
+      <mat-icon class="menu-icon">business</mat-icon>
+      <span class="menu-text">Phòng ban</span>
+    </a>
+    
+    <a mat-list-item routerLink="/users/roles" routerLinkActive="active-menu-item" class="menu-item">
+      <mat-icon class="menu-icon">verified_user</mat-icon>
+      <span class="menu-text">Vai trò & Quyền hạn</span>
+    </a>
+
+    <a mat-list-item routerLink="/tasks/list" routerLinkActive="active-menu-item" class="menu-item">
+      <mat-icon class="menu-icon">assignment</mat-icon>
+      <span class="menu-text">Danh sách nhiệm vụ</span>
+    </a>
+    
+    <a mat-list-item routerLink="/tasks/create" routerLinkActive="active-menu-item" class="menu-item" *ngIf="isAdmin">
+      <mat-icon class="menu-icon">add_task</mat-icon>
+      <span class="menu-text">Giao nhiệm vụ</span>
+    </a>
+  </div>
+</div>

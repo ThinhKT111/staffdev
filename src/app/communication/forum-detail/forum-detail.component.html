@@ -1,0 +1,112 @@
+<!-- src/app/communication/forum-detail/forum-detail.component.html -->
+<div class="forum-detail-container">
+    <div class="page-header">
+      <button mat-button color="primary" (click)="backToForum()">
+        <mat-icon>arrow_back</mat-icon>
+        Quay lại diễn đàn
+      </button>
+      
+      <div class="post-actions" *ngIf="post && canEditOrDelete(post.userId)">
+        <button mat-raised-button color="primary" routerLink="/communication/forum/edit/{{ post.id }}">
+          <mat-icon>edit</mat-icon>
+          Chỉnh sửa
+        </button>
+        <button mat-raised-button color="warn" (click)="deletePost()">
+          <mat-icon>delete</mat-icon>
+          Xóa
+        </button>
+      </div>
+    </div>
+  
+    <!-- Post detail -->
+    <mat-card class="post-card" *ngIf="post">
+      <mat-card-content>
+        <div class="post-header">
+          <div class="user-avatar">{{ getUserAvatar(post.userId) }}</div>
+          <div class="post-meta">
+            <div class="user-name">{{ getUserName(post.userId) }}</div>
+            <div class="post-time">{{ formatDate(post.createdAt) }}</div>
+          </div>
+        </div>
+  
+        <h1 class="post-title">{{ post.title }}</h1>
+        <div class="post-content">{{ post.content }}</div>
+      </mat-card-content>
+    </mat-card>
+  
+    <!-- Comments section -->
+    <div class="comments-section" *ngIf="post">
+      <h2 class="section-title">Bình luận ({{ comments.length }})</h2>
+      
+      <!-- Add comment form -->
+      <mat-card class="comment-form-card" *ngIf="currentUser">
+        <mat-card-content>
+          <form [formGroup]="commentForm" (ngSubmit)="addComment()">
+            <div class="comment-form-header">
+              <div class="user-avatar small">{{ getUserAvatar(currentUser.id) }}</div>
+              <div class="user-name">{{ getUserName(currentUser.id) }}</div>
+            </div>
+            
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Viết bình luận</mat-label>
+              <textarea matInput formControlName="content" rows="3" placeholder="Nhập nội dung bình luận..."></textarea>
+              <mat-error *ngIf="commentForm.get('content')?.hasError('required')">
+                Nội dung bình luận là bắt buộc
+              </mat-error>
+              <mat-error *ngIf="commentForm.get('content')?.hasError('minlength')">
+                Bình luận cần có ít nhất 3 ký tự
+              </mat-error>
+            </mat-form-field>
+            
+            <div class="form-actions">
+              <button type="submit" mat-raised-button color="primary" [disabled]="commentForm.invalid">
+                <mat-icon>send</mat-icon>
+                Gửi bình luận
+              </button>
+            </div>
+          </form>
+        </mat-card-content>
+      </mat-card>
+      
+      <!-- Comments list -->
+      <div class="comments-list">
+        <mat-card class="comment-card" *ngFor="let comment of comments">
+          <mat-card-content>
+            <div class="comment-header">
+              <div class="user-avatar small">{{ getUserAvatar(comment.userId) }}</div>
+              <div class="comment-meta">
+                <div class="user-name">{{ getUserName(comment.userId) }}</div>
+                <div class="comment-time">{{ formatDate(comment.createdAt) }}</div>
+              </div>
+              
+              <div class="comment-actions" *ngIf="canEditOrDelete(comment.userId)">
+                <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Comment actions">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                  <button mat-menu-item (click)="deleteComment(comment.id)">
+                    <mat-icon color="warn">delete</mat-icon>
+                    <span class="delete-text">Xóa</span>
+                  </button>
+                </mat-menu>
+              </div>
+            </div>
+            
+            <div class="comment-content">{{ comment.content }}</div>
+          </mat-card-content>
+        </mat-card>
+        
+        <!-- Empty comments -->
+        <div class="empty-comments" *ngIf="comments.length === 0">
+          <mat-icon>chat_bubble_outline</mat-icon>
+          <p>Chưa có bình luận nào</p>
+          <p class="sub-text">Hãy là người đầu tiên bình luận!</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Loading state -->
+    <div class="loading-state" *ngIf="!post">
+      <p>Đang tải bài viết...</p>
+    </div>
+  </div>

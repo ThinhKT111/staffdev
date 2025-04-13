@@ -1,0 +1,178 @@
+<!-- src/app/training/document-list/document-list.component.html -->
+<div class="document-list-container">
+    <div class="page-header">
+      <h1 class="page-title">Quản lý tài liệu</h1>
+      <button mat-raised-button color="primary" (click)="toggleUploadForm()">
+        <mat-icon>upload_file</mat-icon>
+        {{ showUploadForm ? 'Hủy tải lên' : 'Tải lên tài liệu' }}
+      </button>
+    </div>
+  
+    <!-- Upload form -->
+    <mat-card class="upload-card" *ngIf="showUploadForm">
+      <mat-card-content>
+        <h2 class="section-title">Tải lên tài liệu mới</h2>
+        <form [formGroup]="uploadForm" (ngSubmit)="uploadDocument()">
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Tiêu đề</mat-label>
+              <input matInput formControlName="title" placeholder="Nhập tiêu đề tài liệu">
+              <mat-error *ngIf="uploadForm.get('title')?.hasError('required')">
+                Tiêu đề là trường bắt buộc
+              </mat-error>
+            </mat-form-field>
+          </div>
+  
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Danh mục</mat-label>
+              <mat-select formControlName="category">
+                <mat-option *ngFor="let category of categories" [value]="category">
+                  {{ category }}
+                </mat-option>
+                <mat-option value="Other">Khác</mat-option>
+              </mat-select>
+              <mat-error *ngIf="uploadForm.get('category')?.hasError('required')">
+                Danh mục là trường bắt buộc
+              </mat-error>
+            </mat-form-field>
+          </div>
+  
+          <div class="file-upload-row">
+            <button type="button" mat-stroked-button (click)="fileInput.click()">
+              <mat-icon>attach_file</mat-icon>
+              Chọn tập tin
+            </button>
+            <input type="file" #fileInput style="display: none" (change)="onFileSelected($event)">
+            <span class="selected-file" *ngIf="selectedFile">{{ selectedFile.name }}</span>
+            <span class="file-error" *ngIf="!selectedFile">Vui lòng chọn tập tin</span>
+          </div>
+  
+          <div class="form-actions">
+            <button type="button" mat-button (click)="toggleUploadForm()">Hủy</button>
+            <button type="submit" mat-raised-button color="primary" [disabled]="uploadForm.invalid || !selectedFile">
+              Tải lên
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  
+    <!-- Filter section -->
+    <mat-card class="filter-card">
+      <mat-card-content>
+        <div class="filter-container">
+          <mat-form-field appearance="outline">
+            <mat-label>Tìm kiếm</mat-label>
+            <input matInput placeholder="Tìm theo tiêu đề..." (keyup)="onSearchChange($event)">
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
+  
+          <div class="category-filters">
+            <button mat-stroked-button [class.active]="selectedCategory === ''" (click)="onCategoryChange('')">
+              Tất cả
+            </button>
+            <button 
+              mat-stroked-button 
+              *ngFor="let category of categories" 
+              [class.active]="selectedCategory === category"
+              (click)="onCategoryChange(category)"
+            >
+              {{ category }}
+            </button>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  
+    <!-- Documents list -->
+    <div class="documents-grid">
+      <mat-card class="document-card" *ngFor="let document of filteredDocuments">
+        <mat-card-content>
+          <div class="document-header">
+            <div class="document-icon" [attr.data-extension]="document.fileUrl.split('.').pop()?.toLowerCase()">
+              <mat-icon>{{ getFileIcon(document.fileUrl) }}</mat-icon>
+            </div>
+            <div class="document-info">
+              <h3 class="document-title">{{ document.title }}</h3>
+              <div class="document-meta">
+                <div class="category-chip">{{ document.category }}</div>
+                <div class="upload-info">
+                  Tải lên bởi {{ getUserName(document.uploadedBy) }} vào {{ formatDate(document.uploadedAt) }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="document-actions">
+            <button mat-icon-button color="primary" matTooltip="Tải xuống" (click)="downloadDocument(document.id)">
+              <mat-icon>download</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" matTooltip="Xóa" *ngIf="isAdmin" (click)="deleteDocument(document.id)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+  
+      <div class="no-documents" *ngIf="filteredDocuments.length === 0">
+        <mat-icon>folder_open</mat-icon>
+        <p>Không tìm thấy tài liệu</p>
+      </div>
+    </div>
+  
+    <!-- Table view for larger screens -->
+    <div class="table-container mat-elevation-z2">
+      <table mat-table [dataSource]="filteredDocuments" class="document-table">
+        <!-- Title Column -->
+        <ng-container matColumnDef="title">
+          <th mat-header-cell *matHeaderCellDef>Tiêu đề</th>
+          <td mat-cell *matCellDef="let document">
+            <div class="document-cell">
+              <mat-icon>{{ getFileIcon(document.fileUrl) }}</mat-icon>
+              <span class="document-title-cell">{{ document.title }}</span>
+            </div>
+          </td>
+        </ng-container>
+  
+        <!-- Category Column -->
+        <ng-container matColumnDef="category">
+          <th mat-header-cell *matHeaderCellDef>Danh mục</th>
+          <td mat-cell *matCellDef="let document">
+            <div class="category-chip">{{ document.category }}</div>
+          </td>
+        </ng-container>
+  
+        <!-- Uploaded By Column -->
+        <ng-container matColumnDef="uploadedBy">
+          <th mat-header-cell *matHeaderCellDef>Người tải lên</th>
+          <td mat-cell *matCellDef="let document">{{ getUserName(document.uploadedBy) }}</td>
+        </ng-container>
+  
+        <!-- Uploaded At Column -->
+        <ng-container matColumnDef="uploadedAt">
+          <th mat-header-cell *matHeaderCellDef>Ngày tải lên</th>
+          <td mat-cell *matCellDef="let document">{{ formatDate(document.uploadedAt) }}</td>
+        </ng-container>
+  
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Thao tác</th>
+          <td mat-cell *matCellDef="let document">
+            <button mat-icon-button color="primary" matTooltip="Tải xuống" (click)="downloadDocument(document.id)">
+              <mat-icon>download</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" matTooltip="Xóa" *ngIf="isAdmin" (click)="deleteDocument(document.id)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+  
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+  
+      <div *ngIf="filteredDocuments.length === 0" class="no-data">
+        <p>Không tìm thấy tài liệu</p>
+      </div>
+    </div>
+  </div>
