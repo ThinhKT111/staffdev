@@ -3,13 +3,13 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { FormsModule } from '@angular/forms'; // Thêm FormsModule
+import { FormsModule } from '@angular/forms';
 
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
-import { MatTabsModule } from '@angular/material/tabs'; // Thêm MatTabsModule
+import { MatTabsModule } from '@angular/material/tabs'; // Added MatTabsModule
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -19,7 +19,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatBadgeModule } from '@angular/material/badge';
-import { MatTooltipModule } from '@angular/material/tooltip'; // Thêm MatTooltipModule
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { AttendanceService } from '../../core/services/attendance.service';
 import { UserService } from '../../core/services/user.service';
@@ -34,12 +34,12 @@ import { User } from '../../core/models/user';
     CommonModule,
     RouterModule,
     ReactiveFormsModule,
-    FormsModule, // Thêm FormsModule
+    FormsModule,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
     MatTableModule,
-    MatTabsModule, // Thêm MatTabsModule
+    MatTabsModule, // Added MatTabsModule
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
@@ -49,13 +49,12 @@ import { User } from '../../core/models/user';
     MatDividerModule,
     MatChipsModule,
     MatBadgeModule,
-    MatTooltipModule // Thêm MatTooltipModule
+    MatTooltipModule
   ],
   templateUrl: './attendance.component.html',
   styleUrls: ['./attendance.component.scss']
 })
 export class AttendanceComponent implements OnInit {
-  // Phần code còn lại giữ nguyên không đổi
   currentUser: User | null = null;
   isAdmin = false;
   currentDate = new Date();
@@ -67,13 +66,13 @@ export class AttendanceComponent implements OnInit {
   hasCheckedInToday = false;
   hasCheckedOutToday = false;
   
-  // Cho trang quản lý
+  // For admin page
   users: User[] = [];
   selectedMonth = new Date().getMonth() + 1;
   selectedYear = new Date().getFullYear();
   selectedUserId: number | null = null;
   
-  // Thống kê
+  // Stats
   stats: any = {
     workDays: 0,
     leaveDays: 0,
@@ -81,6 +80,9 @@ export class AttendanceComponent implements OnInit {
     totalWorkHours: 0,
     totalOvertimeHours: 0
   };
+
+  // Add filtered records for leave records
+  filteredLeaveRecords: Attendance[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -121,14 +123,21 @@ export class AttendanceComponent implements OnInit {
         this.attendanceRecords = records.sort((a, b) => {
           const dateA = new Date(a.date || a.checkIn || a.leaveDate || '');
           const dateB = new Date(b.date || b.checkIn || b.leaveDate || '');
-          return dateB.getTime() - dateA.getTime(); // Sắp xếp giảm dần theo ngày
+          return dateB.getTime() - dateA.getTime(); // Sort descending by date
         });
+        // Update filtered leave records
+        this.updateFilteredLeaveRecords();
       },
       error: (err) => {
         console.error('Error loading attendance data', err);
         this.snackBar.open('Không thể tải dữ liệu điểm danh', 'Đóng', { duration: 3000 });
       }
     });
+  }
+
+  // Add a method to filter leave records
+  updateFilteredLeaveRecords(): void {
+    this.filteredLeaveRecords = this.attendanceRecords.filter(record => record.leaveType);
   }
 
   loadAttendanceStats(userId: number, month: number, year: number): void {
