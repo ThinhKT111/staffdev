@@ -1,202 +1,201 @@
-<!-- src/app/user-management/employee-profile/employee-profile.component.html -->
 <div class="profile-container">
-    <div class="page-header">
-      <button mat-button color="primary" (click)="backToUserList()" *ngIf="!isCurrentUser">
-        <mat-icon>arrow_back</mat-icon>
-        Quay lại danh sách
+  <div class="page-header">
+    <button mat-button color="primary" (click)="backToUserList()" *ngIf="!isCurrentUser">
+      <mat-icon>arrow_back</mat-icon>
+      Quay lại danh sách
+    </button>
+    <div class="header-actions" *ngIf="isCurrentUser || isAdmin">
+      <button mat-raised-button color="primary" *ngIf="!isEditMode" (click)="toggleEditMode()">
+        <mat-icon>edit</mat-icon>
+        Chỉnh sửa hồ sơ
       </button>
-      <div class="header-actions" *ngIf="isCurrentUser || isAdmin">
-        <button mat-raised-button color="primary" *ngIf="!isEditMode" (click)="toggleEditMode()">
-          <mat-icon>edit</mat-icon>
-          Chỉnh sửa hồ sơ
-        </button>
-      </div>
     </div>
-  
-    <div class="profile-content" *ngIf="user">
-      <mat-card class="profile-header-card">
-        <mat-card-content>
-          <div class="profile-header">
-            <div class="avatar-container">
-              <div class="avatar" *ngIf="!avatarPreview">
-                {{ getAvatarInitials() }}
-              </div>
-              <img *ngIf="avatarPreview" [src]="avatarPreview" alt="Avatar" class="avatar-image">
-              
-              <div class="avatar-upload" *ngIf="isEditMode">
-                <button mat-mini-fab color="primary" (click)="fileInput.click()">
-                  <mat-icon>photo_camera</mat-icon>
-                </button>
-                <input hidden type="file" #fileInput (change)="onFileSelected($event)" accept="image/*">
-              </div>
+  </div>
+
+  <div class="profile-content" *ngIf="user">
+    <mat-card class="profile-header-card">
+      <mat-card-content>
+        <div class="profile-header">
+          <div class="avatar-container">
+            <div class="avatar" *ngIf="!avatarPreview">
+              {{ getAvatarInitials() }}
             </div>
+            <img *ngIf="avatarPreview" [src]="avatarPreview" alt="Avatar" class="avatar-image">
             
-            <div class="user-info">
-              <h1 class="user-name">{{ user.fullName }}</h1>
-              <div class="user-meta">
-                <div class="meta-item">
-                  <mat-icon>badge</mat-icon>
-                  <span>{{ getRoleName(user.role) }}</span>
-                </div>
-                <div class="meta-item" *ngIf="department">
-                  <mat-icon>business</mat-icon>
-                  <span>{{ department.name }}</span>
-                </div>
-                <div class="meta-item">
-                  <mat-icon>email</mat-icon>
-                  <span>{{ user.email }}</span>
-                </div>
-                <div class="meta-item">
-                  <mat-icon>phone</mat-icon>
-                  <span>{{ user.phone }}</span>
-                </div>
+            <div class="avatar-upload" *ngIf="isEditMode">
+              <button mat-mini-fab color="primary" (click)="fileInput.click()">
+                <mat-icon>photo_camera</mat-icon>
+              </button>
+              <input hidden type="file" #fileInput (change)="onFileSelected($event)" accept="image/*">
+            </div>
+          </div>
+          
+          <div class="user-info">
+            <h1 class="user-name">{{ user.fullName }}</h1>
+            <div class="user-meta">
+              <div class="meta-item">
+                <mat-icon>badge</mat-icon>
+                <span>{{ getRoleName(user.role) }}</span>
+              </div>
+              <div class="meta-item" *ngIf="department">
+                <mat-icon>business</mat-icon>
+                <span>{{ department.name }}</span>
+              </div>
+              <div class="meta-item">
+                <mat-icon>email</mat-icon>
+                <span>{{ user.email }}</span>
+              </div>
+              <div class="meta-item">
+                <mat-icon>phone</mat-icon>
+                <span>{{ user.phone }}</span>
               </div>
             </div>
           </div>
-        </mat-card-content>
-      </mat-card>
-  
-      <mat-tabs class="profile-tabs">
-        <mat-tab label="Thông tin cá nhân">
-          <div class="tab-content">
-            <mat-card class="profile-detail-card">
-              <mat-card-content>
-                <div *ngIf="!isEditMode && profile">
-                  <div class="detail-section">
-                    <h2 class="section-title">Thông tin cơ bản</h2>
-                    <div class="detail-row">
-                      <div class="detail-label">CCCD/CMND:</div>
-                      <div class="detail-value">{{ user.cccd }}</div>
-                    </div>
-                    <div class="detail-row">
-                      <div class="detail-label">Ngày sinh:</div>
-                      <div class="detail-value">{{ formatDate(profile.dateOfBirth) }}</div>
-                    </div>
-                    <div class="detail-row">
-                      <div class="detail-label">Địa chỉ:</div>
-                      <div class="detail-value">{{ profile.address || 'Chưa cập nhật' }}</div>
-                    </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-tab-group class="profile-tabs">
+      <mat-tab label="Thông tin cá nhân">
+        <div class="tab-content">
+          <mat-card class="profile-detail-card">
+            <mat-card-content>
+              <div *ngIf="!isEditMode && profile">
+                <div class="detail-section">
+                  <h2 class="section-title">Thông tin cơ bản</h2>
+                  <div class="detail-row">
+                    <div class="detail-label">CCCD/CMND:</div>
+                    <div class="detail-value">{{ user.cccd }}</div>
                   </div>
-                  
-                  <mat-divider></mat-divider>
-                  
-                  <div class="detail-section">
-                    <h2 class="section-title">Kinh nghiệm làm việc</h2>
-                    <div class="detail-content">
-                      {{ profile.experience || 'Chưa cập nhật thông tin kinh nghiệm làm việc.' }}
-                    </div>
+                  <div class="detail-row">
+                    <div class="detail-label">Ngày sinh:</div>
+                    <div class="detail-value">{{ formatDate(profile.dateOfBirth) }}</div>
                   </div>
-                  
-                  <mat-divider></mat-divider>
-                  
-                  <div class="detail-section">
-                    <h2 class="section-title">Kỹ năng</h2>
-                    <div class="skills-list" *ngIf="profile.skills">
-                      <div class="skill-chip" *ngFor="let skill of profile.skills.split(',')">
-                        {{ skill.trim() }}
-                      </div>
-                    </div>
-                    <div *ngIf="!profile.skills" class="empty-message">
-                      Chưa cập nhật thông tin kỹ năng.
-                    </div>
+                  <div class="detail-row">
+                    <div class="detail-label">Địa chỉ:</div>
+                    <div class="detail-value">{{ profile.address || 'Chưa cập nhật' }}</div>
                   </div>
                 </div>
                 
-                <!-- Edit mode -->
-                <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" *ngIf="isEditMode">
-                  <div class="detail-section">
-                    <h2 class="section-title">Thông tin cơ bản</h2>
-                    
-                    <mat-form-field appearance="outline" class="full-width">
-                      <mat-label>Ngày sinh</mat-label>
-                      <input matInput [matDatepicker]="picker" formControlName="dateOfBirth">
-                      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                      <mat-datepicker #picker></mat-datepicker>
-                      <mat-error *ngIf="profileForm.get('dateOfBirth')?.hasError('required')">
-                        Ngày sinh là trường bắt buộc
-                      </mat-error>
-                    </mat-form-field>
-                    
-                    <mat-form-field appearance="outline" class="full-width">
-                      <mat-label>Địa chỉ</mat-label>
-                      <textarea matInput formControlName="address" rows="2"></textarea>
-                      <mat-error *ngIf="profileForm.get('address')?.hasError('required')">
-                        Địa chỉ là trường bắt buộc
-                      </mat-error>
-                    </mat-form-field>
+                <mat-divider></mat-divider>
+                
+                <div class="detail-section">
+                  <h2 class="section-title">Kinh nghiệm làm việc</h2>
+                  <div class="detail-content">
+                    {{ profile.experience || 'Chưa cập nhật thông tin kinh nghiệm làm việc.' }}
                   </div>
-                  
-                  <div class="detail-section">
-                    <h2 class="section-title">Kinh nghiệm làm việc</h2>
-                    <mat-form-field appearance="outline" class="full-width">
-                      <mat-label>Kinh nghiệm</mat-label>
-                      <textarea matInput formControlName="experience" rows="4"></textarea>
-                    </mat-form-field>
-                  </div>
-                  
-                  <div class="detail-section">
-                    <h2 class="section-title">Kỹ năng</h2>
-                    <mat-form-field appearance="outline" class="full-width">
-                      <mat-label>Kỹ năng</mat-label>
-                      <input matInput formControlName="skills" placeholder="Nhập các kỹ năng, phân cách bởi dấu phẩy">
-                      <mat-hint>Ví dụ: Angular, React, NodeJS, SQL</mat-hint>
-                    </mat-form-field>
-                  </div>
-                  
-                  <div class="form-actions">
-                    <button type="button" mat-button (click)="toggleEditMode()">Hủy</button>
-                    <button type="submit" mat-raised-button color="primary" [disabled]="profileForm.invalid">
-                      Lưu thông tin
-                    </button>
-                  </div>
-                </form>
-              </mat-card-content>
-            </mat-card>
-          </div>
-        </mat-tab>
-        
-        <mat-tab label="Đào tạo">
-          <div class="tab-content">
-            <mat-card class="profile-detail-card">
-              <mat-card-content>
-                <div class="empty-message">
-                  <mat-icon>school</mat-icon>
-                  <p>Chưa có thông tin khóa học.</p>
                 </div>
-              </mat-card-content>
-            </mat-card>
-          </div>
-        </mat-tab>
-        
-        <mat-tab label="Nhiệm vụ">
-          <div class="tab-content">
-            <mat-card class="profile-detail-card">
-              <mat-card-content>
-                <div class="empty-message">
-                  <mat-icon>assignment</mat-icon>
-                  <p>Chưa có thông tin nhiệm vụ.</p>
+                
+                <mat-divider></mat-divider>
+                
+                <div class="detail-section">
+                  <h2 class="section-title">Kỹ năng</h2>
+                  <div class="skills-list" *ngIf="profile.skills">
+                    <div class="skill-chip" *ngFor="let skill of profile.skills.split(',')">
+                      {{ skill.trim() }}
+                    </div>
+                  </div>
+                  <div *ngIf="!profile.skills" class="empty-message">
+                    Chưa cập nhật thông tin kỹ năng.
+                  </div>
                 </div>
-              </mat-card-content>
-            </mat-card>
-          </div>
-        </mat-tab>
-        
-        <mat-tab label="Điểm danh">
-          <div class="tab-content">
-            <mat-card class="profile-detail-card">
-              <mat-card-content>
-                <div class="empty-message">
-                  <mat-icon>schedule</mat-icon>
-                  <p>Chưa có thông tin điểm danh.</p>
+              </div>
+              
+              <!-- Edit mode -->
+              <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" *ngIf="isEditMode">
+                <div class="detail-section">
+                  <h2 class="section-title">Thông tin cơ bản</h2>
+                  
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Ngày sinh</mat-label>
+                    <input matInput [matDatepicker]="picker" formControlName="dateOfBirth">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                    <mat-error *ngIf="profileForm.get('dateOfBirth')?.hasError('required')">
+                      Ngày sinh là trường bắt buộc
+                    </mat-error>
+                  </mat-form-field>
+                  
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Địa chỉ</mat-label>
+                    <textarea matInput formControlName="address" rows="2"></textarea>
+                    <mat-error *ngIf="profileForm.get('address')?.hasError('required')">
+                      Địa chỉ là trường bắt buộc
+                    </mat-error>
+                  </mat-form-field>
                 </div>
-              </mat-card-content>
-            </mat-card>
-          </div>
-        </mat-tab>
-      </mat-tabs>
-    </div>
-    
-    <div class="loading-message" *ngIf="!user">
-      <p>Đang tải thông tin người dùng...</p>
-    </div>
+                
+                <div class="detail-section">
+                  <h2 class="section-title">Kinh nghiệm làm việc</h2>
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Kinh nghiệm</mat-label>
+                    <textarea matInput formControlName="experience" rows="4"></textarea>
+                  </mat-form-field>
+                </div>
+                
+                <div class="detail-section">
+                  <h2 class="section-title">Kỹ năng</h2>
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Kỹ năng</mat-label>
+                    <input matInput formControlName="skills" placeholder="Nhập các kỹ năng, phân cách bởi dấu phẩy">
+                    <mat-hint>Ví dụ: Angular, React, NodeJS, SQL</mat-hint>
+                  </mat-form-field>
+                </div>
+                
+                <div class="form-actions">
+                  <button type="button" mat-button (click)="toggleEditMode()">Hủy</button>
+                  <button type="submit" mat-raised-button color="primary" [disabled]="profileForm.invalid">
+                    Lưu thông tin
+                  </button>
+                </div>
+              </form>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-tab>
+      
+      <mat-tab label="Đào tạo">
+        <div class="tab-content">
+          <mat-card class="profile-detail-card">
+            <mat-card-content>
+              <div class="empty-message">
+                <mat-icon>school</mat-icon>
+                <p>Chưa có thông tin khóa học.</p>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-tab>
+      
+      <mat-tab label="Nhiệm vụ">
+        <div class="tab-content">
+          <mat-card class="profile-detail-card">
+            <mat-card-content>
+              <div class="empty-message">
+                <mat-icon>assignment</mat-icon>
+                <p>Chưa có thông tin nhiệm vụ.</p>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-tab>
+      
+      <mat-tab label="Điểm danh">
+        <div class="tab-content">
+          <mat-card class="profile-detail-card">
+            <mat-card-content>
+              <div class="empty-message">
+                <mat-icon>schedule</mat-icon>
+                <p>Chưa có thông tin điểm danh.</p>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
   </div>
+  
+  <div class="loading-message" *ngIf="!user">
+    <p>Đang tải thông tin người dùng...</p>
+  </div>
+</div>

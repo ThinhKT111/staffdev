@@ -14,7 +14,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatTabsModule } from '@angular/material/tabs'; // Thêm dòng này
+import { MatTabsModule } from '@angular/material/tabs';
 
 import { EmployeeProfileService } from '../../core/services/employee-profile.service';
 import { UserService } from '../../core/services/user.service';
@@ -42,7 +42,7 @@ import { Department } from '../../core/models/department';
     MatNativeDateModule,
     MatChipsModule,
     MatSnackBarModule,
-    MatTabsModule // Thêm dòng này
+    MatTabsModule // Added MatTabsModule here
   ],
   templateUrl: './employee-profile.component.html',
   styleUrls: ['./employee-profile.component.scss']

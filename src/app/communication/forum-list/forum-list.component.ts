@@ -13,6 +13,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatMenuModule } from '@angular/material/menu';
 
 import { ForumService } from '../../core/services/forum.service';
 import { UserService } from '../../core/services/user.service';
@@ -35,7 +36,8 @@ import { User } from '../../core/models/user';
     MatSnackBarModule,
     MatDividerModule,
     MatChipsModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatMenuModule // Added MatMenuModule here
   ],
   templateUrl: './forum-list.component.html',
   styleUrls: ['./forum-list.component.scss']

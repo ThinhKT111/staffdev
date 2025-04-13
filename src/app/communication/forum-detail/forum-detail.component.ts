@@ -12,7 +12,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatTooltipModule } from '@angular/material/tooltip'; // Thêm dòng này
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { ForumService } from '../../core/services/forum.service';
 import { UserService } from '../../core/services/user.service';
@@ -36,7 +36,7 @@ import { User } from '../../core/models/user';
     MatSnackBarModule,
     MatDividerModule,
     MatMenuModule,
-    MatTooltipModule // Thêm dòng này
+    MatTooltipModule
   ],
   templateUrl: './forum-detail.component.html',
   styleUrls: ['./forum-detail.component.scss']
@@ -197,7 +197,7 @@ export class ForumDetailComponent implements OnInit {
   }
 
   canEditOrDelete(userId: number): boolean {
-    return this.isAdmin || (this.currentUser && this.currentUser.id === userId);
+    return this.isAdmin || (this.currentUser !== null && this.currentUser.id === userId);
   }
 
   backToForum(): void {

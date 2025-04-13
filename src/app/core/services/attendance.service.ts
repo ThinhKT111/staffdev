@@ -49,7 +49,8 @@ export class AttendanceService {
       userId: 1,
       leaveType: 'Annual',
       leaveDate: new Date('2025-04-05'),
-      date: new Date('2025-04-05')
+      date: new Date('2025-04-05'),
+      status: 'pending'
     }
   ];
 
@@ -164,7 +165,7 @@ export class AttendanceService {
     if (index !== -1) {
       const updatedRecord = {
         ...this.mockAttendance[index],
-        status: 'approved'
+        status: 'approved' as 'approved'
       };
       
       this.mockAttendance[index] = updatedRecord;
@@ -181,7 +182,7 @@ export class AttendanceService {
     if (index !== -1) {
       const updatedRecord = {
         ...this.mockAttendance[index],
-        status: 'rejected'
+        status: 'rejected' as 'rejected'
       };
       
       this.mockAttendance[index] = updatedRecord;
