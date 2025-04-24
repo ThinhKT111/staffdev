@@ -1,6 +1,7 @@
 // src/app/core/services/user.service.ts
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators'; // Thêm import này
 import { ApiBaseService } from './api-base.service';
 import { User } from '../models/user';
 
@@ -38,59 +39,69 @@ export class UserService {
 
   constructor(private apiBaseService: ApiBaseService) { }
 
-  getUsers(params?: any): Observable<User[]> {
-    // Mock API - will be replaced with real API call later
-    return of(this.mockUsers);
-    // return this.apiBaseService.get<User[]>(this.endpoint, params);
-  }
-
-  getUserById(id: number): Observable<User> {
-    // Mock API
-    const user = this.mockUsers.find(u => u.id === id);
-    if (user) {
-      return of(user);
-    }
-    throw new Error('User not found');
-    // return this.apiBaseService.getById<User>(this.endpoint, id);
-  }
-
-  createUser(user: Omit<User, 'id' | 'createdAt' | 'updatedAt'>): Observable<User> {
-    // Mock API
-    const newUser = {
-      ...user,
-      id: this.mockUsers.length + 1,
-      createdAt: new Date(),
-      updatedAt: new Date()
+  private mapUserFromApi(apiUser: any): User {
+    return {
+      id: apiUser.user_id,
+      cccd: apiUser.cccd,
+      email: apiUser.email,
+      phone: apiUser.phone,
+      fullName: apiUser.full_name,
+      role: apiUser.role,
+      departmentId: apiUser.department_id,
+      createdAt: new Date(apiUser.created_at),
+      updatedAt: new Date(apiUser.updated_at)
     };
-    this.mockUsers.push(newUser);
-    return of(newUser);
-    // return this.apiBaseService.post<User>(this.endpoint, user);
   }
-
+  
+  getUsers(params?: any): Observable<User[]> {
+    return this.apiBaseService.get<any[]>(this.endpoint, params)
+      .pipe(
+        map((users: any[]) => users.map((user: any) => this.mapUserFromApi(user)))
+      );
+  }
+  
+  getUserById(id: number): Observable<User> {
+    return this.apiBaseService.getById<any>(this.endpoint, id)
+      .pipe(
+        map((user: any) => this.mapUserFromApi(user))
+      );
+  }
+  
+  createUser(user: Omit<User, 'id' | 'createdAt' | 'updatedAt'>): Observable<User> {
+    // Chuyển đổi từ camelCase sang snake_case cho API
+    const apiUser = {
+      cccd: user.cccd,
+      email: user.email,
+      phone: user.phone,
+      full_name: user.fullName,
+      role: user.role,
+      department_id: user.departmentId,
+      password: user.password || 'password123' // Mật khẩu mặc định nếu không có
+    };
+    
+    return this.apiBaseService.post<any>(this.endpoint, apiUser)
+      .pipe(
+        map((response: any) => this.mapUserFromApi(response))
+      );
+  }
+  
   updateUser(id: number, user: Partial<User>): Observable<User> {
-    // Mock API
-    const index = this.mockUsers.findIndex(u => u.id === id);
-    if (index !== -1) {
-      const updatedUser = {
-        ...this.mockUsers[index],
-        ...user,
-        updatedAt: new Date()
-      };
-      this.mockUsers[index] = updatedUser;
-      return of(updatedUser);
-    }
-    throw new Error('User not found');
-    // return this.apiBaseService.put<User>(this.endpoint, id, user);
+    // Chuyển đổi từ camelCase sang snake_case cho API
+    const apiUser: any = {};
+    if (user.email) apiUser.email = user.email;
+    if (user.phone) apiUser.phone = user.phone;
+    if (user.fullName) apiUser.full_name = user.fullName;
+    if (user.role) apiUser.role = user.role;
+    if (user.departmentId) apiUser.department_id = user.departmentId;
+    if (user.password) apiUser.password = user.password;
+    
+    return this.apiBaseService.put<any>(this.endpoint, id, apiUser)
+      .pipe(
+        map((response: any) => this.mapUserFromApi(response))
+      );
   }
-
+  
   deleteUser(id: number): Observable<void> {
-    // Mock API
-    const index = this.mockUsers.findIndex(u => u.id === id);
-    if (index !== -1) {
-      this.mockUsers.splice(index, 1);
-      return of(undefined);
-    }
-    throw new Error('User not found');
-    // return this.apiBaseService.delete<void>(this.endpoint, id);
+    return this.apiBaseService.delete<void>(this.endpoint, id);
   }
 }
