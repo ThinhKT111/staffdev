@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 
 import { MatCardModule } from '@angular/material/card';
@@ -64,7 +64,10 @@ export class TaskFormComponent implements OnInit {
       title: ['', [Validators.required]],
       description: ['', [Validators.required]],
       assignedTo: [null, [Validators.required]],
-      deadline: [new Date(), [Validators.required]],
+      deadline: [new Date(), [
+        Validators.required, 
+        this.validateFutureDate
+      ]],
       status: ['Pending', [Validators.required]]
     });
   }
@@ -147,5 +150,19 @@ export class TaskFormComponent implements OnInit {
 
   cancel(): void {
     this.router.navigate(['/tasks/list']);
+  }
+
+  validateFutureDate(control: AbstractControl): ValidationErrors | null {
+    const date = new Date(control.value);
+    const now = new Date();
+    
+    // Set hours, minutes, seconds to 0 for date comparison
+    now.setHours(0, 0, 0, 0);
+    
+    if (date < now) {
+      return { pastDate: true };
+    }
+    
+    return null;
   }
 }

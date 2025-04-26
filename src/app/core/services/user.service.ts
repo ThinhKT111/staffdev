@@ -73,7 +73,8 @@ export class UserService {
       role: apiUser.role,
       departmentId: apiUser.department_id,
       createdAt: new Date(apiUser.created_at),
-      updatedAt: new Date(apiUser.updated_at)
+      updatedAt: new Date(apiUser.updated_at),
+      password: apiUser.password // Include password if returned by API
     };
   }
 }

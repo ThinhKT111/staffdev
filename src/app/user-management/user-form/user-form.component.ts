@@ -67,12 +67,23 @@ export class UserFormComponent implements OnInit {
     private snackBar: MatSnackBar
   ) {
     this.userForm = this.fb.group({
-      cccd: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(12)]],
-      fullName: ['', [Validators.required]],
-      email: ['', [Validators.required, Validators.email]],
-      phone: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
-      role: ['Employee', [Validators.required]],
-      departmentId: [null, [Validators.required]],
+      cccd: ['', [
+        Validators.required, 
+        Validators.minLength(9), 
+        Validators.maxLength(12)
+      ]],
+      fullName: ['', Validators.required],
+      email: ['', [
+        Validators.required, 
+        Validators.email,
+        Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
+      ]],
+      phone: ['', [
+        Validators.required, 
+        Validators.pattern(/^\d{10}$/)
+      ]],
+      role: ['Employee', Validators.required],
+      departmentId: [null, Validators.required],
       isActive: [true]
     });
   }

@@ -67,8 +67,8 @@ export class ForumService {
   createComment(comment: Omit<ForumComment, 'id' | 'createdAt'>): Observable<ForumComment> {
     const apiComment = {
       content: comment.content,
-      postId: comment.postId,
-      userId: comment.userId
+      post_id: comment.postId,
+      user_id: comment.userId
     };
     
     return this.apiBaseService.post<any>(this.commentsEndpoint, apiComment)

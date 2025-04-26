@@ -220,9 +220,15 @@ export class AttendanceComponent implements OnInit {
   requestLeave(): void {
     if (!this.currentUser || !this.leaveForm.valid) return;
     
-    this.isLoading = true;
     const { leaveType, date, reason } = this.leaveForm.value;
     
+    // Validate date is not in the past
+    if (new Date(date) < new Date()) {
+      this.snackBar.open('Không thể đăng ký ngày trong quá khứ', 'Đóng', { duration: 3000 });
+      return;
+    }
+    
+    this.isLoading = true;
     this.attendanceService.requestLeave(this.currentUser.id, leaveType, date, reason).subscribe({
       next: (record) => {
         this.snackBar.open('Đã gửi yêu cầu nghỉ phép', 'Đóng', { duration: 3000 });

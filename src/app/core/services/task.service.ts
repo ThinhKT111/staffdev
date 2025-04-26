@@ -45,16 +45,14 @@ export class TaskService {
     const apiTask = {
       title: task.title,
       description: task.description,
-      assignedTo: task.assignedTo,
-      assignedBy: task.assignedBy,
+      assigned_to: task.assignedTo,
+      assigned_by: task.assignedBy,
       deadline: task.deadline,
       status: task.status || 'Pending'
     };
     
     return this.apiBaseService.post<any>(this.endpoint, apiTask)
-      .pipe(
-        map(response => this.mapTaskFromApi(response))
-      );
+      .pipe(map(response => this.mapTaskFromApi(response)));
   }
   
   updateTask(id: number, task: Partial<Task>): Observable<Task> {
@@ -76,9 +74,7 @@ export class TaskService {
   
   submitFeedback(id: number, score: number, feedback: string): Observable<Task> {
     return this.apiBaseService.post<any>(`${this.endpoint}/${id}/feedback`, { score, feedback })
-      .pipe(
-        map(response => this.mapTaskFromApi(response))
-      );
+      .pipe(map(response => this.mapTaskFromApi(response)));
   }
   
   deleteTask(id: number): Observable<void> {

@@ -31,18 +31,17 @@ export class TrainingPathService {
     const apiPath = {
       title: path.title || path.name,
       description: path.description,
-      departmentId: path.departmentId,
+      department_id: path.departmentId,
       duration: path.duration,
-      createdBy: path.createdBy,
-      totalCourses: path.totalCourses,
-      durationInWeeks: path.durationInWeeks,
-      isActive: path.isActive
+      created_by: path.createdBy,
+      // The following fields don't exist in database schema but are used in frontend
+      total_courses: path.totalCourses,
+      duration_in_weeks: path.durationInWeeks,
+      is_active: path.isActive
     };
     
     return this.apiBaseService.post<any>(this.endpoint, apiPath)
-      .pipe(
-        map(response => this.mapTrainingPathFromApi(response))
-      );
+      .pipe(map(response => this.mapTrainingPathFromApi(response)));
   }
   
   updateTrainingPath(id: number, path: Partial<TrainingPath>): Observable<TrainingPath> {

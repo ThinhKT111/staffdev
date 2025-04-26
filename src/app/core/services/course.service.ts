@@ -79,13 +79,13 @@ export class CourseService {
     return {
       id: apiCourse.course_id,
       title: apiCourse.title,
-      name: apiCourse.title, // Cho tương thích với code cũ
+      name: apiCourse.title, // For backwards compatibility
       description: apiCourse.description,
       trainingPathId: apiCourse.training_path_id,
       type: apiCourse.type,
       durationHours: apiCourse.duration_hours,
-      duration: Math.ceil(apiCourse.duration_hours / 8), // Cho tương thích với code cũ
-      level: apiCourse.level,
+      duration: Math.ceil(apiCourse.duration_hours / 8), // For backwards compatibility
+      level: apiCourse.level || 'beginner', // May not exist in backend
       totalLessons: apiCourse.total_lessons,
       isActive: apiCourse.is_active,
       createdAt: new Date(apiCourse.created_at),

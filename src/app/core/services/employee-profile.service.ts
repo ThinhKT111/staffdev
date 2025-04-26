@@ -57,9 +57,7 @@ export class EmployeeProfileService {
     };
     
     return this.apiBaseService.post<any>(this.endpoint, apiProfile)
-      .pipe(
-        map(response => this.mapProfileFromApi(response))
-      );
+      .pipe(map(response => this.mapProfileFromApi(response)));
   }
 
   updateProfile(id: number, profile: Partial<EmployeeProfile>): Observable<EmployeeProfile> {
@@ -80,14 +78,12 @@ export class EmployeeProfileService {
     const formData = new FormData();
     formData.append('avatar', file);
     
-    const token = localStorage.getItem('token');
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
-
-    return this.http.post<{avatarUrl: string}>(`${this.apiUrl}/${this.endpoint}/user/${userId}/avatar`, formData, { headers })
-      .pipe(
-        map(response => response.avatarUrl)
-      );
+    return this.http.post<{avatarUrl: string}>(
+      `${this.apiUrl}/${this.endpoint}/user/${userId}/avatar`, 
+      formData,
+      { headers: new HttpHeaders({ 'Authorization': `Bearer ${localStorage.getItem('token')}` }) }
+    ).pipe(
+      map(response => response.avatarUrl)
+    );
   }
 }

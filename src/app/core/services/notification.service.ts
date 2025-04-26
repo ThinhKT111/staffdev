@@ -57,7 +57,22 @@ export class NotificationService {
   connectToSocket(userId: number): void {
     if (!this.socket) {
       this.socket = io(environment.apiUrl.replace('/api', ''), {
-        query: { userId: userId.toString() }
+        query: { userId: userId.toString() },
+        reconnection: true,
+        reconnectionAttempts: 5,
+        reconnectionDelay: 1000
+      });
+      
+      this.socket.on('connect', () => {
+        console.log('Connected to notification socket');
+      });
+      
+      this.socket.on('disconnect', () => {
+        console.log('Disconnected from notification socket');
+      });
+      
+      this.socket.on('reconnect_attempt', (attemptNumber) => {
+        console.log(`Attempting to reconnect: ${attemptNumber}`);
       });
     }
   }
