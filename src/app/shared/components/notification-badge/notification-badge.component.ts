@@ -40,22 +40,28 @@ export class NotificationBadgeComponent implements OnInit {
       id: 1,
       type: 'task',
       message: 'Nhiệm vụ mới "Báo cáo tiến độ dự án" đã được giao cho bạn',
+      content: 'Nhiệm vụ mới "Báo cáo tiến độ dự án" đã được giao cho bạn',
       time: '5 phút trước',
-      read: false
+      read: false,
+      createdAt: new Date()
     },
     {
       id: 2,
       type: 'course',
       message: 'Bạn đã hoàn thành khóa học "Angular Fundamentals"',
+      content: 'Bạn đã hoàn thành khóa học "Angular Fundamentals"',
       time: '2 giờ trước',
-      read: false
+      read: false,
+      createdAt: new Date()
     },
     {
       id: 3,
       type: 'system',
       message: 'Hệ thống sẽ bảo trì lúc 22:00 tối nay',
+      content: 'Hệ thống sẽ bảo trì lúc 22:00 tối nay',
       time: 'Hôm nay, 14:30',
-      read: true
+      read: true,
+      createdAt: new Date()
     }
   ];
 

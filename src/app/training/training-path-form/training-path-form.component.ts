@@ -16,6 +16,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { TrainingPathService } from '../../core/services/training-path.service';
 import { DepartmentService } from '../../core/services/department.service';
 import { Department } from '../../core/models/department';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-training-path-form',
@@ -50,6 +51,7 @@ export class TrainingPathFormComponent implements OnInit {
     private fb: FormBuilder,
     private trainingPathService: TrainingPathService,
     private departmentService: DepartmentService,
+    private authService: AuthService,
     private route: ActivatedRoute,
     private router: Router,
     private snackBar: MatSnackBar

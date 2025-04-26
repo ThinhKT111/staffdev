@@ -66,7 +66,7 @@ export class NotificationService {
   }
 
   markAsRead(id: number): Observable<Notification> {
-    return this.apiBaseService.patch<any>(`${this.endpoint}/${id}/read`, { isRead: true })
+    return this.apiBaseService.put<any>(`${this.endpoint}/${id}/read`, id, { isRead: true })
       .pipe(
         map(notification => this.mapNotificationFromApi(notification))
       );

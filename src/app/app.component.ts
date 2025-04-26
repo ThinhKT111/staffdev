@@ -6,6 +6,7 @@ import { LayoutComponent } from './shared/components/layout/layout.component';
 import { AuthService } from './core/services/auth.service';
 import { Subscription } from 'rxjs';
 import { NotificationService } from './core/services/notification.service';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-root',
@@ -13,7 +14,8 @@ import { NotificationService } from './core/services/notification.service';
   imports: [
     CommonModule, 
     RouterOutlet,
-    LayoutComponent
+    LayoutComponent,
+    MatSnackBarModule
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
@@ -25,7 +27,8 @@ export class AppComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
