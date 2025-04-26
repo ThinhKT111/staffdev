@@ -13,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'; // Added import
 
 import { AuthService } from '../../core/services/auth.service';
 import { NotificationService } from '../../core/services/notification.service';
@@ -31,7 +32,8 @@ import { NotificationService } from '../../core/services/notification.service';
     MatIconModule,
     MatCheckboxModule,
     MatDividerModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatProgressSpinnerModule // Added to imports
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']

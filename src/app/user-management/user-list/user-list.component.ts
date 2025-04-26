@@ -133,4 +133,9 @@ export class UserListComponent implements OnInit {
       });
     }
   }
+
+  // Add the missing getFullName method
+  getFullName(user: User): string {
+    return user.fullName;
+  }
 }
