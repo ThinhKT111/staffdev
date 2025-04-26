@@ -51,6 +51,8 @@ export class TaskListComponent implements OnInit {
   searchControl = new FormControl('');
   isAdmin = false;
   currentUserId = 0;
+
+  isLoading = false;
   
   constructor(
     private taskService: TaskService,

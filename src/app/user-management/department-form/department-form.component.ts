@@ -33,6 +33,8 @@ export class DepartmentFormComponent implements OnInit {
   isEditMode = false;
   managers: any[] = [];
 
+  isLoading = false;
+
   constructor(
     private fb: FormBuilder,
     private departmentService: DepartmentService,

@@ -51,6 +51,8 @@ export class TrainingPathListComponent implements OnInit {
   departments: Department[] = [];
   searchControl = new FormControl('');
 
+  isLoading = false;
+
   constructor(
     private trainingPathService: TrainingPathService,
     private departmentService: DepartmentService,

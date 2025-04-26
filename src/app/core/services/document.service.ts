@@ -19,42 +19,31 @@ export class DocumentService {
     private http: HttpClient
   ) { }
 
-  private mapDocumentFromApi(apiDocument: any): Document {
-    return {
-      id: apiDocument.document_id,
-      title: apiDocument.title,
-      fileUrl: apiDocument.file_url,
-      category: apiDocument.category,
-      uploadedBy: apiDocument.uploaded_by,
-      uploadedAt: new Date(apiDocument.uploaded_at)
-    };
-  }
-
   getDocuments(params?: any): Observable<Document[]> {
     return this.apiBaseService.get<any[]>(this.endpoint, params)
       .pipe(
         map((documents: any[]) => documents.map(doc => this.mapDocumentFromApi(doc)))
       );
   }
-
+  
   getDocumentsByCategory(category: string): Observable<Document[]> {
     return this.apiBaseService.get<any[]>(`${this.endpoint}?category=${category}`)
       .pipe(
         map((documents: any[]) => documents.map(doc => this.mapDocumentFromApi(doc)))
       );
   }
-
+  
   getDocumentById(id: number): Observable<Document> {
     return this.apiBaseService.getById<any>(this.endpoint, id)
       .pipe(
         map(document => this.mapDocumentFromApi(document))
       );
   }
-
+  
   getCategories(): Observable<string[]> {
     return this.apiBaseService.get<string[]>(`${this.endpoint}/categories`);
   }
-
+  
   downloadDocument(id: number): Observable<string> {
     return this.apiBaseService.get<string>(`${this.endpoint}/${id}/download`);
   }
@@ -70,13 +59,13 @@ export class DocumentService {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
-    
+  
     return this.http.post<any>(`${this.apiUrl}/${this.endpoint}`, formData, { headers })
       .pipe(
         map(response => this.mapDocumentFromApi(response))
       );
   }
-
+  
   updateDocument(id: number, data: Partial<Document>): Observable<Document> {
     const apiDocument: any = {};
     if (data.title) apiDocument.title = data.title;
@@ -87,8 +76,19 @@ export class DocumentService {
         map(response => this.mapDocumentFromApi(response))
       );
   }
-
+  
   deleteDocument(id: number): Observable<void> {
-    return this.apiBaseService.delete<void>(`${this.endpoint}/${id}`);
+    return this.apiBaseService.delete<void>(this.endpoint, id);
+  }
+  
+  private mapDocumentFromApi(apiDocument: any): Document {
+    return {
+      id: apiDocument.document_id,
+      title: apiDocument.title,
+      fileUrl: apiDocument.file_url,
+      category: apiDocument.category,
+      uploadedBy: apiDocument.uploaded_by,
+      uploadedAt: new Date(apiDocument.uploaded_at)
+    };
   }
 }

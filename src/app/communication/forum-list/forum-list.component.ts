@@ -51,6 +51,8 @@ export class ForumListComponent implements OnInit {
   isAdmin = false;
   currentUser: User | null = null;
 
+  isLoading = false;
+
   constructor(
     private forumService: ForumService,
     private userService: UserService,

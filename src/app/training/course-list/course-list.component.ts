@@ -52,6 +52,8 @@ export class CourseListComponent implements OnInit {
   searchControl = new FormControl('');
   selectedPathId: number | null = null;
 
+  isLoading = false;
+
   constructor(
     private courseService: CourseService,
     private trainingPathService: TrainingPathService,

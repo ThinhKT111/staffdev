@@ -13,37 +13,20 @@ export class TrainingPathService {
 
   constructor(private apiBaseService: ApiBaseService) { }
 
-  private mapTrainingPathFromApi(apiPath: any): TrainingPath {
-    return {
-      id: apiPath.training_path_id,
-      title: apiPath.title,
-      name: apiPath.title, // Giữ lại để tương thích với code cũ
-      description: apiPath.description,
-      departmentId: apiPath.department_id,
-      duration: apiPath.duration,
-      createdBy: apiPath.created_by,
-      totalCourses: apiPath.total_courses,
-      durationInWeeks: apiPath.duration_in_weeks,
-      isActive: apiPath.is_active,
-      createdAt: new Date(apiPath.created_at),
-      updatedAt: apiPath.updated_at ? new Date(apiPath.updated_at) : undefined
-    };
-  }
-
   getTrainingPaths(): Observable<TrainingPath[]> {
     return this.apiBaseService.get<any[]>(this.endpoint)
       .pipe(
         map((paths: any[]) => paths.map(path => this.mapTrainingPathFromApi(path)))
       );
   }
-
+  
   getTrainingPathById(id: number): Observable<TrainingPath> {
     return this.apiBaseService.getById<any>(this.endpoint, id)
       .pipe(
         map(path => this.mapTrainingPathFromApi(path))
       );
   }
-
+  
   createTrainingPath(path: Omit<TrainingPath, 'id' | 'createdAt' | 'updatedAt'>): Observable<TrainingPath> {
     const apiPath = {
       title: path.title,
@@ -61,7 +44,7 @@ export class TrainingPathService {
         map(response => this.mapTrainingPathFromApi(response))
       );
   }
-
+  
   updateTrainingPath(id: number, path: Partial<TrainingPath>): Observable<TrainingPath> {
     const apiPath: any = {};
     if (path.title) apiPath.title = path.title;
@@ -77,8 +60,25 @@ export class TrainingPathService {
         map(response => this.mapTrainingPathFromApi(response))
       );
   }
-
+  
   deleteTrainingPath(id: number): Observable<void> {
     return this.apiBaseService.delete<void>(this.endpoint, id);
+  }
+  
+  private mapTrainingPathFromApi(apiPath: any): TrainingPath {
+    return {
+      id: apiPath.training_path_id,
+      title: apiPath.title,
+      name: apiPath.title, // Giữ lại để tương thích với code cũ
+      description: apiPath.description,
+      departmentId: apiPath.department_id,
+      duration: apiPath.duration,
+      createdBy: apiPath.created_by,
+      totalCourses: apiPath.total_courses,
+      durationInWeeks: apiPath.duration_in_weeks,
+      isActive: apiPath.is_active,
+      createdAt: new Date(apiPath.created_at),
+      updatedAt: apiPath.updated_at ? new Date(apiPath.updated_at) : undefined
+    };
   }
 }

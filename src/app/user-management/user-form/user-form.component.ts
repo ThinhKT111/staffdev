@@ -48,6 +48,8 @@ export class UserFormComponent implements OnInit {
   isEditMode = false;
   userId: number | null = null;
   departments: Department[] = [];
+
+  isLoading = false;
   
   roles = [
     { value: 'Admin', label: 'Admin' },

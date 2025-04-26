@@ -65,6 +65,8 @@ export class AttendanceComponent implements OnInit {
   todayAttendance: Attendance | null = null;
   hasCheckedInToday = false;
   hasCheckedOutToday = false;
+
+  isLoading = false;
   
   // For admin page
   users: User[] = [];

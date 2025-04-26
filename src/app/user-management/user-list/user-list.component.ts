@@ -62,7 +62,7 @@ export class UserListComponent implements OnInit {
   ngOnInit(): void {
     this.loadUserData();
   }
-
+  
   loadUserData() {
     this.isLoading = true;
     this.userService.getUsers().subscribe({
@@ -80,6 +80,10 @@ export class UserListComponent implements OnInit {
     });
   }
 
+  getFullName(user: User): string {
+    return user.fullName;
+  }
+
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value.toLowerCase();
     this.filteredDataSource = this.dataSource.filter(user =>
@@ -94,7 +98,7 @@ export class UserListComponent implements OnInit {
       this.filteredDataSource = [...this.dataSource];
       return;
     }
-
+  
     this.filteredDataSource = [...this.dataSource].sort((a, b) => {
       const isAsc = sort.direction === 'asc';
       switch (sort.active) {
@@ -116,10 +120,6 @@ export class UserListComponent implements OnInit {
     this.pageIndex = event.pageIndex;
     // Trong ứng dụng thực tế, bạn có thể muốn gọi API với pagination
     // this.userService.getUsers({ page: this.pageIndex, limit: this.pageSize })
-  }
-
-  getFullName(user: User): string {
-    return user.fullName;
   }
 
   deleteUser(id: number) {

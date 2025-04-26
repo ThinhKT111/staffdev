@@ -88,14 +88,14 @@ export class NotificationService {
       });
     }
   }
-
+  
   disconnectFromSocket(): void {
     if (this.socket) {
       this.socket.disconnect();
       this.socket = null;
     }
   }
-
+  
   onNewNotification(callback: (notification: Notification) => void): void {
     if (this.socket) {
       this.socket.on('notification', (notification: any) => {

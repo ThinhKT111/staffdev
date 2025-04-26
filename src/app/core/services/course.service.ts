@@ -13,45 +13,27 @@ export class CourseService {
 
   constructor(private apiBaseService: ApiBaseService) { }
 
-  private mapCourseFromApi(apiCourse: any): Course {
-    return {
-      id: apiCourse.course_id,
-      title: apiCourse.title,
-      name: apiCourse.title, // Giữ lại để tương thích với code cũ
-      description: apiCourse.description,
-      trainingPathId: apiCourse.training_path_id,
-      type: apiCourse.type,
-      durationHours: apiCourse.duration_hours,
-      duration: Math.ceil(apiCourse.duration_hours / 8), // Giữ lại để tương thích với code cũ (approximate)
-      level: apiCourse.level,
-      totalLessons: apiCourse.total_lessons,
-      isActive: apiCourse.is_active,
-      createdAt: new Date(apiCourse.created_at),
-      updatedAt: apiCourse.updated_at ? new Date(apiCourse.updated_at) : undefined
-    };
-  }
-
   getCourses(params?: any): Observable<Course[]> {
     return this.apiBaseService.get<any[]>(this.endpoint, params)
       .pipe(
         map((courses: any[]) => courses.map(course => this.mapCourseFromApi(course)))
       );
   }
-
+  
   getCoursesByTrainingPath(trainingPathId: number): Observable<Course[]> {
     return this.apiBaseService.get<any[]>(`${this.endpoint}?pathId=${trainingPathId}`)
       .pipe(
         map((courses: any[]) => courses.map(course => this.mapCourseFromApi(course)))
       );
   }
-
+  
   getCourseById(id: number): Observable<Course> {
     return this.apiBaseService.getById<any>(this.endpoint, id)
       .pipe(
         map(course => this.mapCourseFromApi(course))
       );
   }
-
+  
   createCourse(course: Omit<Course, 'id' | 'createdAt' | 'updatedAt'>): Observable<Course> {
     const apiCourse = {
       title: course.title || course.name, // Giữ lại để tương thích với code cũ
@@ -69,7 +51,7 @@ export class CourseService {
         map(response => this.mapCourseFromApi(response))
       );
   }
-
+  
   updateCourse(id: number, course: Partial<Course>): Observable<Course> {
     const apiCourse: any = {};
     if (course.title || course.name) apiCourse.title = course.title || course.name;
@@ -88,8 +70,26 @@ export class CourseService {
         map(response => this.mapCourseFromApi(response))
       );
   }
-
+  
   deleteCourse(id: number): Observable<void> {
     return this.apiBaseService.delete<void>(this.endpoint, id);
+  }
+  
+  private mapCourseFromApi(apiCourse: any): Course {
+    return {
+      id: apiCourse.course_id,
+      title: apiCourse.title,
+      name: apiCourse.title, // Giữ lại để tương thích với code cũ
+      description: apiCourse.description,
+      trainingPathId: apiCourse.training_path_id,
+      type: apiCourse.type,
+      durationHours: apiCourse.duration_hours,
+      duration: Math.ceil(apiCourse.duration_hours / 8), // Giữ lại để tương thích với code cũ (approximate)
+      level: apiCourse.level,
+      totalLessons: apiCourse.total_lessons,
+      isActive: apiCourse.is_active,
+      createdAt: new Date(apiCourse.created_at),
+      updatedAt: apiCourse.updated_at ? new Date(apiCourse.updated_at) : undefined
+    };
   }
 }

@@ -68,6 +68,8 @@ export class DocumentListComponent implements OnInit {
   
   isAdmin = false;
   currentUser: User | null = null;
+
+  isLoading = false;
   
   showUploadForm = false;
   uploadForm: FormGroup;

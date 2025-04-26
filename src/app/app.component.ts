@@ -44,8 +44,9 @@ export class AppComponent implements OnInit {
   setupNotifications(): void {
     this.notificationService.onNewNotification(notification => {
       // Hiển thị thông báo, ví dụ thông qua MatSnackBar
-      // Hoặc cập nhật số lượng thông báo chưa đọc
-      console.log('Thông báo mới:', notification);
+      this.snackBar.open(`${notification.title}: ${notification.content}`, 'Đóng', { 
+        duration: 5000 
+      });
     });
   }
   

@@ -12,15 +12,6 @@ export class DepartmentService {
   private endpoint = 'departments';
 
   constructor(private apiBaseService: ApiBaseService) { }
-  
-  private mapDepartmentFromApi(apiDepartment: any): Department {
-    return {
-      id: apiDepartment.department_id,
-      name: apiDepartment.department_name,
-      managerId: apiDepartment.manager_id,
-      description: apiDepartment.description || ''
-    };
-  }
 
   getDepartments(): Observable<Department[]> {
     return this.apiBaseService.get<any[]>(this.endpoint)
@@ -28,15 +19,15 @@ export class DepartmentService {
         map((departments: any[]) => departments.map(dept => this.mapDepartmentFromApi(dept)))
       );
   }
-
+  
   getDepartmentById(id: number): Observable<Department> {
     return this.apiBaseService.getById<any>(this.endpoint, id)
       .pipe(
         map(department => this.mapDepartmentFromApi(department))
       );
   }
-
-  createDepartment(department: Omit<Department, 'id' | 'createdAt' | 'updatedAt'>): Observable<Department> {
+  
+  createDepartment(department: Omit<Department, 'id'>): Observable<Department> {
     const apiDepartment = {
       department_name: department.name,
       manager_id: department.managerId,
@@ -48,7 +39,7 @@ export class DepartmentService {
         map(response => this.mapDepartmentFromApi(response))
       );
   }
-
+  
   updateDepartment(id: number, department: Partial<Department>): Observable<Department> {
     const apiDepartment: any = {};
     if (department.name) apiDepartment.department_name = department.name;
@@ -60,8 +51,17 @@ export class DepartmentService {
         map(response => this.mapDepartmentFromApi(response))
       );
   }
-
+  
   deleteDepartment(id: number): Observable<void> {
     return this.apiBaseService.delete<void>(this.endpoint, id);
+  }
+  
+  private mapDepartmentFromApi(apiDepartment: any): Department {
+    return {
+      id: apiDepartment.department_id,
+      name: apiDepartment.department_name,
+      managerId: apiDepartment.manager_id,
+      description: apiDepartment.description || ''
+    };
   }
 }

@@ -11,8 +11,10 @@ interface Notification {
   id: number;
   type: 'task' | 'course' | 'system' | 'alert';
   message: string;
+  content: string; // Thêm thuộc tính này
   time: string;
   read: boolean;
+  createdAt: Date; // Thêm thuộc tính này
 }
 
 @Component({
@@ -70,5 +72,27 @@ export class NotificationBadgeComponent implements OnInit {
       case 'alert': return 'warning';
       default: return 'notifications';
     }
+  }
+
+  markAllAsRead(): void {
+    // Mark all notifications as read
+    this.notifications.forEach(notification => notification.read = true);
+    this.count = 0;
+  }
+  
+  markAsRead(id: number): void {
+    // Mark specific notification as read
+    const notification = this.notifications.find(n => n.id === id);
+    if (notification && !notification.read) {
+      notification.read = true;
+      this.count--;
+    }
+  }
+  
+  formatDate(date: Date | string): string {
+    if (!date) return '';
+    
+    const d = new Date(date);
+    return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getFullYear()} ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
   }
 }

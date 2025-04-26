@@ -43,6 +43,9 @@ export class TrainingPathFormComponent implements OnInit {
   pathId: number | null = null;
   departments: Department[] = [];
 
+  isLoading = false;
+  currentUser = this.authService.currentUser;
+
   constructor(
     private fb: FormBuilder,
     private trainingPathService: TrainingPathService,

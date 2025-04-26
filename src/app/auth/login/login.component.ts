@@ -63,6 +63,7 @@ export class LoginComponent {
       this.authService.login(username, password).subscribe({
         next: (response) => {
           this.isLoading = false;
+          this.snackBar.open('Đăng nhập thành công', 'Đóng', { duration: 3000 });
           
           // Kết nối socket cho thông báo thời gian thực
           this.notificationService.connectToSocket(response.user.id);

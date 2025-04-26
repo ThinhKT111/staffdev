@@ -12,20 +12,6 @@ export class UserService {
   private endpoint = 'users';
 
   constructor(private apiBaseService: ApiBaseService) { }
-
-  private mapUserFromApi(apiUser: any): User {
-    return {
-      id: apiUser.user_id,
-      cccd: apiUser.cccd,
-      email: apiUser.email,
-      phone: apiUser.phone,
-      fullName: apiUser.full_name,
-      role: apiUser.role,
-      departmentId: apiUser.department_id,
-      createdAt: new Date(apiUser.created_at),
-      updatedAt: new Date(apiUser.updated_at)
-    };
-  }
   
   getUsers(params?: any): Observable<User[]> {
     return this.apiBaseService.get<any[]>(this.endpoint, params)
@@ -42,7 +28,6 @@ export class UserService {
   }
   
   createUser(user: Omit<User, 'id' | 'createdAt' | 'updatedAt'>): Observable<User> {
-    // Chuyển đổi từ camelCase sang snake_case cho API
     const apiUser = {
       cccd: user.cccd,
       email: user.email,
@@ -50,7 +35,7 @@ export class UserService {
       full_name: user.fullName,
       role: user.role,
       department_id: user.departmentId,
-      password: user.password || 'password123' // Mật khẩu mặc định nếu không có
+      password: user.password || 'password123'
     };
     
     return this.apiBaseService.post<any>(this.endpoint, apiUser)
@@ -60,7 +45,6 @@ export class UserService {
   }
   
   updateUser(id: number, user: Partial<User>): Observable<User> {
-    // Chuyển đổi từ camelCase sang snake_case cho API
     const apiUser: any = {};
     if (user.email) apiUser.email = user.email;
     if (user.phone) apiUser.phone = user.phone;
@@ -77,5 +61,19 @@ export class UserService {
   
   deleteUser(id: number): Observable<void> {
     return this.apiBaseService.delete<void>(this.endpoint, id);
+  }
+  
+  private mapUserFromApi(apiUser: any): User {
+    return {
+      id: apiUser.user_id,
+      cccd: apiUser.cccd,
+      email: apiUser.email,
+      phone: apiUser.phone,
+      fullName: apiUser.full_name,
+      role: apiUser.role,
+      departmentId: apiUser.department_id,
+      createdAt: new Date(apiUser.created_at),
+      updatedAt: new Date(apiUser.updated_at)
+    };
   }
 }
