@@ -37,7 +37,7 @@ export class AuthService {
   }
 
   login(cccd: string, password: string): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/auth/login`, { cccd, password })
+    return this.http.post<any>(`${this.apiUrl}/login`, { cccd, password })
       .pipe(
         tap(response => {
           localStorage.setItem('token', response.access_token);
@@ -45,7 +45,7 @@ export class AuthService {
           this.currentUserSubject.next(response.user);
         }),
         catchError(error => {
-          return throwError(() => new Error('Đăng nhập thất bại: ' + (error.error?.message || 'Lỗi kết nối')));
+          return throwError(() => new Error('Đăng nhập thất bại: ' + (error.error?.message || 'Sai tên đăng nhập hoặc mật khẩu')));
         })
       );
   }

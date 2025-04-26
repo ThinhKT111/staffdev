@@ -45,8 +45,8 @@ export class TaskService {
     const apiTask = {
       title: task.title,
       description: task.description,
-      assigned_to: task.assignedTo,
-      assigned_by: task.assignedBy,
+      assignedTo: task.assignedTo,
+      assignedBy: task.assignedBy,
       deadline: task.deadline,
       status: task.status || 'Pending'
     };
@@ -61,14 +61,14 @@ export class TaskService {
     const apiTask: any = {};
     if (task.title) apiTask.title = task.title;
     if (task.description) apiTask.description = task.description;
-    if (task.assignedTo !== undefined) apiTask.assigned_to = task.assignedTo;
-    if (task.assignedBy !== undefined) apiTask.assigned_by = task.assignedBy;
+    if (task.assignedTo !== undefined) apiTask.assignedTo = task.assignedTo;
+    if (task.assignedBy !== undefined) apiTask.assignedBy = task.assignedBy;
     if (task.deadline) apiTask.deadline = task.deadline;
     if (task.status) apiTask.status = task.status;
     if (task.score !== undefined) apiTask.score = task.score;
     if (task.feedback !== undefined) apiTask.feedback = task.feedback;
     
-    return this.apiBaseService.put<any>(this.endpoint, id, apiTask)
+    return this.apiBaseService.patch<any>(this.endpoint, id, apiTask)
       .pipe(
         map(response => this.mapTaskFromApi(response))
       );

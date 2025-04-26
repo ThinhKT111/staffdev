@@ -1,3 +1,4 @@
+// src/app/shared/components/notification-badge/notification-badge.component.ts
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -6,16 +7,7 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
-
-interface Notification {
-  id: number;
-  type: 'task' | 'course' | 'system' | 'alert';
-  message: string;
-  content: string; // Thêm thuộc tính này
-  time: string;
-  read: boolean;
-  createdAt: Date; // Thêm thuộc tính này
-}
+import { Notification } from '../../../core/models/notification';
 
 @Component({
   selector: 'app-notification-badge',
@@ -34,36 +26,9 @@ interface Notification {
 })
 export class NotificationBadgeComponent implements OnInit {
   @Input() count = 0;
-  
-  notifications: Notification[] = [
-    {
-      id: 1,
-      type: 'task',
-      message: 'Nhiệm vụ mới "Báo cáo tiến độ dự án" đã được giao cho bạn',
-      content: 'Nhiệm vụ mới "Báo cáo tiến độ dự án" đã được giao cho bạn',
-      time: '5 phút trước',
-      read: false,
-      createdAt: new Date()
-    },
-    {
-      id: 2,
-      type: 'course',
-      message: 'Bạn đã hoàn thành khóa học "Angular Fundamentals"',
-      content: 'Bạn đã hoàn thành khóa học "Angular Fundamentals"',
-      time: '2 giờ trước',
-      read: false,
-      createdAt: new Date()
-    },
-    {
-      id: 3,
-      type: 'system',
-      message: 'Hệ thống sẽ bảo trì lúc 22:00 tối nay',
-      content: 'Hệ thống sẽ bảo trì lúc 22:00 tối nay',
-      time: 'Hôm nay, 14:30',
-      read: true,
-      createdAt: new Date()
-    }
-  ];
+  @Input() notifications: Notification[] = [];
+  @Input() markAsRead: (id: number) => void = () => {};
+  @Input() markAllAsRead: () => void = () => {};
 
   constructor() { }
 
@@ -72,33 +37,32 @@ export class NotificationBadgeComponent implements OnInit {
 
   getIconForType(type: string): string {
     switch (type) {
-      case 'task': return 'assignment';
-      case 'course': return 'school';
-      case 'system': return 'info';
-      case 'alert': return 'warning';
+      case 'Task': return 'assignment';
+      case 'Assignment': return 'school';
+      case 'Training': return 'menu_book';
+      case 'General': return 'notifications';
       default: return 'notifications';
     }
   }
 
-  markAllAsRead(): void {
-    // Mark all notifications as read
-    this.notifications.forEach(notification => notification.read = true);
-    this.count = 0;
-  }
-  
-  markAsRead(id: number): void {
-    // Mark specific notification as read
-    const notification = this.notifications.find(n => n.id === id);
-    if (notification && !notification.read) {
-      notification.read = true;
-      this.count--;
-    }
-  }
-  
   formatDate(date: Date | string): string {
     if (!date) return '';
     
-    const d = new Date(date);
-    return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getFullYear()} ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
+    const now = new Date();
+    const notificationDate = new Date(date);
+    const diffMs = now.getTime() - notificationDate.getTime();
+    const diffMins = Math.round(diffMs / 60000);
+    const diffHours = Math.round(diffMs / 3600000);
+    const diffDays = Math.round(diffMs / 86400000);
+    
+    if (diffMins < 60) {
+      return `${diffMins} phút trước`;
+    } else if (diffHours < 24) {
+      return `${diffHours} giờ trước`;
+    } else if (diffDays < 30) {
+      return `${diffDays} ngày trước`;
+    } else {
+      return `${notificationDate.getDate().toString().padStart(2, '0')}/${(notificationDate.getMonth() + 1).toString().padStart(2, '0')}/${notificationDate.getFullYear()}`;
+    }
   }
 }

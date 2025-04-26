@@ -25,6 +25,7 @@ export const authInterceptor: HttpInterceptorFn = (
         localStorage.removeItem('token');
         localStorage.removeItem('currentUser');
         inject(Router).navigate(['/auth/login']);
+        return throwError(() => new Error('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại'));
       }
       return throwError(() => error);
     })

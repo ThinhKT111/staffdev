@@ -1,7 +1,7 @@
 // src/app/core/services/document.service.ts
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
 import { ApiBaseService } from './api-base.service';
 import { Document } from '../models/document';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -62,7 +62,14 @@ export class DocumentService {
   
     return this.http.post<any>(`${this.apiUrl}/${this.endpoint}`, formData, { headers })
       .pipe(
-        map(response => this.mapDocumentFromApi(response))
+        map(response => this.mapDocumentFromApi(response)),
+        catchError(error => {
+          let errorMsg = 'Lỗi khi tải lên tài liệu';
+          if (error.error && error.error.message) {
+            errorMsg = error.error.message;
+          }
+          throw new Error(errorMsg);
+        })
       );
   }
   
@@ -71,7 +78,7 @@ export class DocumentService {
     if (data.title) apiDocument.title = data.title;
     if (data.category) apiDocument.category = data.category;
     
-    return this.apiBaseService.put<any>(this.endpoint, id, apiDocument)
+    return this.apiBaseService.patch<any>(this.endpoint, id, apiDocument)
       .pipe(
         map(response => this.mapDocumentFromApi(response))
       );

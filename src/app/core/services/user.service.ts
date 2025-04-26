@@ -32,9 +32,9 @@ export class UserService {
       cccd: user.cccd,
       email: user.email,
       phone: user.phone,
-      full_name: user.fullName,
+      fullName: user.fullName,
       role: user.role,
-      department_id: user.departmentId,
+      departmentId: user.departmentId,
       password: user.password || 'password123'
     };
     
@@ -48,12 +48,12 @@ export class UserService {
     const apiUser: any = {};
     if (user.email) apiUser.email = user.email;
     if (user.phone) apiUser.phone = user.phone;
-    if (user.fullName) apiUser.full_name = user.fullName;
+    if (user.fullName) apiUser.fullName = user.fullName;
     if (user.role) apiUser.role = user.role;
-    if (user.departmentId) apiUser.department_id = user.departmentId;
+    if (user.departmentId) apiUser.departmentId = user.departmentId;
     if (user.password) apiUser.password = user.password;
     
-    return this.apiBaseService.put<any>(this.endpoint, id, apiUser)
+    return this.apiBaseService.patch<any>(this.endpoint, id, apiUser)
       .pipe(
         map((response: any) => this.mapUserFromApi(response))
       );

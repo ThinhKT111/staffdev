@@ -36,14 +36,14 @@ export class CourseService {
   
   createCourse(course: Omit<Course, 'id' | 'createdAt' | 'updatedAt'>): Observable<Course> {
     const apiCourse = {
-      title: course.title || course.name, // Giữ lại để tương thích với code cũ
+      title: course.title || course.name,
       description: course.description,
-      training_path_id: course.trainingPathId,
-      type: course.type,
-      duration_hours: course.durationHours || (course.duration ? course.duration * 8 : 0), // Giữ lại để tương thích với code cũ
+      trainingPathId: course.trainingPathId,
+      type: course.type || 'Online',
+      durationHours: course.durationHours || (course.duration ? course.duration * 8 : 0),
       level: course.level,
-      total_lessons: course.totalLessons,
-      is_active: course.isActive
+      totalLessons: course.totalLessons,
+      isActive: course.isActive
     };
     
     return this.apiBaseService.post<any>(this.endpoint, apiCourse)
@@ -56,16 +56,16 @@ export class CourseService {
     const apiCourse: any = {};
     if (course.title || course.name) apiCourse.title = course.title || course.name;
     if (course.description) apiCourse.description = course.description;
-    if (course.trainingPathId) apiCourse.training_path_id = course.trainingPathId;
+    if (course.trainingPathId) apiCourse.trainingPathId = course.trainingPathId;
     if (course.type) apiCourse.type = course.type;
     if (course.durationHours || course.duration) {
-      apiCourse.duration_hours = course.durationHours || (course.duration ? course.duration * 8 : undefined);
+      apiCourse.durationHours = course.durationHours || (course.duration ? course.duration * 8 : undefined);
     }
     if (course.level) apiCourse.level = course.level;
-    if (course.totalLessons !== undefined) apiCourse.total_lessons = course.totalLessons;
-    if (course.isActive !== undefined) apiCourse.is_active = course.isActive;
+    if (course.totalLessons !== undefined) apiCourse.totalLessons = course.totalLessons;
+    if (course.isActive !== undefined) apiCourse.isActive = course.isActive;
     
-    return this.apiBaseService.put<any>(this.endpoint, id, apiCourse)
+    return this.apiBaseService.patch<any>(this.endpoint, id, apiCourse)
       .pipe(
         map(response => this.mapCourseFromApi(response))
       );
@@ -79,12 +79,12 @@ export class CourseService {
     return {
       id: apiCourse.course_id,
       title: apiCourse.title,
-      name: apiCourse.title, // Giữ lại để tương thích với code cũ
+      name: apiCourse.title, // Cho tương thích với code cũ
       description: apiCourse.description,
       trainingPathId: apiCourse.training_path_id,
       type: apiCourse.type,
       durationHours: apiCourse.duration_hours,
-      duration: Math.ceil(apiCourse.duration_hours / 8), // Giữ lại để tương thích với code cũ (approximate)
+      duration: Math.ceil(apiCourse.duration_hours / 8), // Cho tương thích với code cũ
       level: apiCourse.level,
       totalLessons: apiCourse.total_lessons,
       isActive: apiCourse.is_active,

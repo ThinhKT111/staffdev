@@ -1,51 +1,53 @@
+<!-- src/app/auth/login/login.component.html -->
 <div class="login-container">
-    <div class="login-card-container">
-      <mat-card class="login-card">
-        <div class="login-header">
-          <h1 class="login-title">StaffDev</h1>
-          <h2 class="login-subtitle">Đăng nhập</h2>
-          <p class="login-description">Chào mừng trở lại! Vui lòng đăng nhập để truy cập vào hệ thống.</p>
-        </div>
+  <div class="login-card-container">
+    <mat-card class="login-card">
+      <div class="login-header">
+        <h1 class="login-title">StaffDev</h1>
+        <h2 class="login-subtitle">Đăng nhập</h2>
+        <p class="login-description">Chào mừng trở lại! Vui lòng đăng nhập để truy cập vào hệ thống.</p>
+      </div>
+      
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Tên đăng nhập</mat-label>
+          <input matInput formControlName="username" placeholder="Nhập CCCD">
+          <mat-icon matSuffix>person</mat-icon>
+          <mat-error *ngIf="loginForm.get('username')?.hasError('required')">
+            Vui lòng nhập CCCD
+          </mat-error>
+        </mat-form-field>
         
-        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Tên đăng nhập</mat-label>
-            <input matInput formControlName="username" placeholder="Nhập CCCD hoặc username">
-            <mat-icon matSuffix>person</mat-icon>
-            <mat-error *ngIf="loginForm.get('username')?.hasError('required')">
-              Vui lòng nhập tên đăng nhập
-            </mat-error>
-          </mat-form-field>
-          
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Mật khẩu</mat-label>
-            <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password">
-            <button type="button" mat-icon-button matSuffix (click)="hidePassword = !hidePassword">
-              <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
-            </button>
-            <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
-              Vui lòng nhập mật khẩu
-            </mat-error>
-            <mat-error *ngIf="loginForm.get('password')?.hasError('minlength')">
-              Mật khẩu phải có ít nhất 6 ký tự
-            </mat-error>
-          </mat-form-field>
-          
-          <div class="form-actions">
-            <mat-checkbox formControlName="rememberMe" color="primary">Ghi nhớ đăng nhập</mat-checkbox>
-            <a routerLink="/auth/forgot-password" class="forgot-password">Quên mật khẩu?</a>
-          </div>
-          
-          <button type="submit" mat-raised-button color="primary" class="login-button" [disabled]="loginForm.invalid">
-            Đăng nhập
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Mật khẩu</mat-label>
+          <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password">
+          <button type="button" mat-icon-button matSuffix (click)="hidePassword = !hidePassword">
+            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
           </button>
-        </form>
+          <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
+            Vui lòng nhập mật khẩu
+          </mat-error>
+          <mat-error *ngIf="loginForm.get('password')?.hasError('minlength')">
+            Mật khẩu phải có ít nhất 6 ký tự
+          </mat-error>
+        </mat-form-field>
         
-        <mat-divider class="login-divider"></mat-divider>
-        
-        <div class="login-footer">
-          <p>Nhân viên mới? <a routerLink="/auth/register" class="register-link">Đăng ký tài khoản</a></p>
+        <div class="form-actions">
+          <mat-checkbox formControlName="rememberMe" color="primary">Ghi nhớ đăng nhập</mat-checkbox>
+          <a routerLink="/auth/forgot-password" class="forgot-password">Quên mật khẩu?</a>
         </div>
-      </mat-card>
-    </div>
+        
+        <button type="submit" mat-raised-button color="primary" class="login-button" [disabled]="loginForm.invalid || isLoading">
+          <mat-spinner *ngIf="isLoading" [diameter]="20" color="accent"></mat-spinner>
+          <span *ngIf="!isLoading">Đăng nhập</span>
+        </button>
+      </form>
+      
+      <mat-divider class="login-divider"></mat-divider>
+      
+      <div class="login-footer">
+        <p>Nhân viên mới? <a routerLink="/auth/register" class="register-link">Đăng ký tài khoản</a></p>
+      </div>
+    </mat-card>
   </div>
+</div>

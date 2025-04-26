@@ -1,5 +1,5 @@
-// Mở file src/app/app.component.ts và thêm thuộc tính title:
-import { Component, OnInit } from '@angular/core';
+// src/app/app.component.ts
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { LayoutComponent } from './shared/components/layout/layout.component';
@@ -20,9 +20,9 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   isLoggedIn = false;
-  title = 'staffdev'; // Thêm dòng này
+  title = 'staffdev';
   private subscription: Subscription = new Subscription();
 
   constructor(
@@ -43,17 +43,15 @@ export class AppComponent implements OnInit {
     });
   }
   
-  // Thêm phương thức này
   setupNotifications(): void {
     this.notificationService.onNewNotification(notification => {
-      // Hiển thị thông báo, ví dụ thông qua MatSnackBar
+      // Hiển thị thông báo
       this.snackBar.open(`${notification.title}: ${notification.content}`, 'Đóng', { 
         duration: 5000 
       });
     });
   }
   
-  // Thêm phương thức này
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
     this.notificationService.disconnectFromSocket();

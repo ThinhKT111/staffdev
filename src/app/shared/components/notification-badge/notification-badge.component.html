@@ -12,7 +12,7 @@
   <mat-divider></mat-divider>
   
   <div class="notification-list" *ngIf="notifications.length > 0">
-    <div class="notification-item" *ngFor="let notification of notifications" [ngClass]="{'unread': !notification.read}" (click)="markAsRead(notification.id)">
+    <div class="notification-item" *ngFor="let notification of notifications" [ngClass]="{'unread': !notification.isRead}" (click)="markAsRead(notification.id)">
       <div class="notification-icon" [ngClass]="notification.type.toLowerCase()">
         <mat-icon>{{ getIconForType(notification.type) }}</mat-icon>
       </div>

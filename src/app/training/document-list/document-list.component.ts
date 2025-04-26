@@ -14,13 +14,13 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatProgressBarModule } from '@angular/material/progress-bar'; // Thêm nếu cần cho loading
-import { MatBadgeModule } from '@angular/material/badge'; // Thêm nếu cần cho badge
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatBadgeModule } from '@angular/material/badge';
 
 import { DocumentService } from '../../core/services/document.service';
 import { UserService } from '../../core/services/user.service';
@@ -50,14 +50,13 @@ import { User } from '../../core/models/user';
     MatMenuModule,
     MatDividerModule,
     MatTooltipModule,
-    MatProgressBarModule, // Thêm nếu cần
-    MatBadgeModule // Thêm nếu cần
+    MatProgressBarModule,
+    MatBadgeModule
   ],
   templateUrl: './document-list.component.html',
   styleUrls: ['./document-list.component.scss']
 })
 export class DocumentListComponent implements OnInit {
-  // Phần code còn lại giữ nguyên không đổi
   documents: Document[] = [];
   filteredDocuments: Document[] = [];
   categories: string[] = [];
@@ -80,8 +79,7 @@ export class DocumentListComponent implements OnInit {
     private userService: UserService,
     private authService: AuthService,
     private fb: FormBuilder,
-    private snackBar: MatSnackBar,
-    private dialog: MatDialog
+    private snackBar: MatSnackBar
   ) {
     this.uploadForm = this.createUploadForm();
   }
@@ -112,7 +110,7 @@ export class DocumentListComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error loading documents', err);
-        this.snackBar.open('Không thể tải danh sách tài liệu', 'Đóng', { duration: 3000 });
+        this.snackBar.open('Không thể tải danh sách tài liệu: ' + err.message, 'Đóng', { duration: 3000 });
         this.isLoading = false;
       }
     });
@@ -125,7 +123,7 @@ export class DocumentListComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error loading categories', err);
-        this.snackBar.open('Không thể tải danh mục tài liệu', 'Đóng', { duration: 3000 });
+        this.snackBar.open('Không thể tải danh mục tài liệu: ' + err.message, 'Đóng', { duration: 3000 });
       }
     });
   }
@@ -201,7 +199,7 @@ export class DocumentListComponent implements OnInit {
         },
         error: (err) => {
           console.error('Error uploading document', err);
-          this.snackBar.open('Không thể tải lên tài liệu', 'Đóng', { duration: 3000 });
+          this.snackBar.open('Không thể tải lên tài liệu: ' + err.message, 'Đóng', { duration: 3000 });
           this.isLoading = false;
         }
       });
@@ -225,7 +223,7 @@ export class DocumentListComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error downloading document', err);
-        this.snackBar.open('Không thể tải tài liệu', 'Đóng', { duration: 3000 });
+        this.snackBar.open('Không thể tải tài liệu: ' + err.message, 'Đóng', { duration: 3000 });
         this.isLoading = false;
       }
     });
@@ -240,7 +238,7 @@ export class DocumentListComponent implements OnInit {
         },
         error: (err) => {
           console.error('Error deleting document', err);
-          this.snackBar.open('Không thể xóa tài liệu', 'Đóng', { duration: 3000 });
+          this.snackBar.open('Không thể xóa tài liệu: ' + err.message, 'Đóng', { duration: 3000 });
         }
       });
     }

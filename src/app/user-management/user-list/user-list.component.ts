@@ -16,10 +16,10 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { UserService } from '../../core/services/user.service';
 import { User } from '../../core/models/user';
-
 
 @Component({
   selector: 'app-user-list',
@@ -39,7 +39,8 @@ import { User } from '../../core/models/user';
     MatChipsModule,
     MatTooltipModule,
     MatCardModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatProgressSpinnerModule
   ],
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.scss']
@@ -74,14 +75,10 @@ export class UserListComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error loading users', err);
-        this.snackBar.open('Không thể tải danh sách người dùng', 'Đóng', { duration: 3000 });
+        this.snackBar.open('Không thể tải danh sách người dùng: ' + err.message, 'Đóng', { duration: 3000 });
         this.isLoading = false;
       }
     });
-  }
-
-  getFullName(user: User): string {
-    return user.fullName;
   }
 
   applyFilter(event: Event) {
@@ -118,12 +115,11 @@ export class UserListComponent implements OnInit {
   handlePageEvent(event: PageEvent) {
     this.pageSize = event.pageSize;
     this.pageIndex = event.pageIndex;
-    // Trong ứng dụng thực tế, bạn có thể muốn gọi API với pagination
-    // this.userService.getUsers({ page: this.pageIndex, limit: this.pageSize })
   }
 
   deleteUser(id: number) {
     if (confirm('Bạn có chắc muốn xóa người dùng này?')) {
+      this.isLoading = true;
       this.userService.deleteUser(id).subscribe({
         next: () => {
           this.snackBar.open('Xóa người dùng thành công', 'Đóng', { duration: 3000 });
@@ -131,7 +127,8 @@ export class UserListComponent implements OnInit {
         },
         error: (err) => {
           console.error('Error deleting user', err);
-          this.snackBar.open('Không thể xóa người dùng', 'Đóng', { duration: 3000 });
+          this.snackBar.open('Không thể xóa người dùng: ' + err.message, 'Đóng', { duration: 3000 });
+          this.isLoading = false;
         }
       });
     }

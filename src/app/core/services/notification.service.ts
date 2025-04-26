@@ -5,16 +5,7 @@ import { map } from 'rxjs/operators';
 import { ApiBaseService } from './api-base.service';
 import { environment } from '../../../environments/environment';
 import { io, Socket } from 'socket.io-client';
-
-interface Notification {
-  id: number; // notification_id
-  userId: number; // user_id
-  title: string;
-  content: string;
-  type: 'Task' | 'Assignment' | 'Training' | 'General';
-  isRead: boolean; // is_read
-  createdAt: Date; // created_at
-}
+import { Notification } from '../models/notification';
 
 @Injectable({
   providedIn: 'root'
@@ -51,22 +42,8 @@ export class NotificationService {
       );
   }
 
-  createNotification(notification: Omit<Notification, 'id' | 'isRead' | 'createdAt'>): Observable<Notification> {
-    const apiNotification = {
-      user_id: notification.userId,
-      title: notification.title,
-      content: notification.content,
-      type: notification.type
-    };
-    
-    return this.apiBaseService.post<any>(this.endpoint, apiNotification)
-      .pipe(
-        map(response => this.mapNotificationFromApi(response))
-      );
-  }
-
   markAsRead(id: number): Observable<Notification> {
-    return this.apiBaseService.put<any>(`${this.endpoint}/${id}/read`, id, { isRead: true })
+    return this.apiBaseService.patch<any>(`${this.endpoint}/${id}/read`, id, { isRead: true })
       .pipe(
         map(notification => this.mapNotificationFromApi(notification))
       );
@@ -76,11 +53,7 @@ export class NotificationService {
     return this.apiBaseService.post<void>(`${this.endpoint}/user/${userId}/mark-all-read`, {});
   }
 
-  deleteNotification(id: number): Observable<void> {
-    return this.apiBaseService.delete<void>(this.endpoint, id);
-  }
-
-  // Real-time notifications
+  // Kết nối WebSocket
   connectToSocket(userId: number): void {
     if (!this.socket) {
       this.socket = io(environment.apiUrl.replace('/api', ''), {

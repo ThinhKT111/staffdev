@@ -33,7 +33,7 @@ export class ForumService {
     const apiPost = {
       title: post.title,
       content: post.content,
-      user_id: post.userId
+      userId: post.userId
     };
     
     return this.apiBaseService.post<any>(this.postsEndpoint, apiPost)
@@ -47,7 +47,7 @@ export class ForumService {
     if (post.title) apiPost.title = post.title;
     if (post.content) apiPost.content = post.content;
     
-    return this.apiBaseService.put<any>(this.postsEndpoint, id, apiPost)
+    return this.apiBaseService.patch<any>(this.postsEndpoint, id, apiPost)
       .pipe(
         map(response => this.mapPostFromApi(response))
       );
@@ -67,8 +67,8 @@ export class ForumService {
   createComment(comment: Omit<ForumComment, 'id' | 'createdAt'>): Observable<ForumComment> {
     const apiComment = {
       content: comment.content,
-      post_id: comment.postId,
-      user_id: comment.userId
+      postId: comment.postId,
+      userId: comment.userId
     };
     
     return this.apiBaseService.post<any>(this.commentsEndpoint, apiComment)

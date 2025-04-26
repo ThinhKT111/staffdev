@@ -1,3 +1,4 @@
+// src/app/shared/components/header/header.component.ts
 import { Component, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -47,7 +48,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.currentUser = user;
         if (user) {
           this.loadNotifications(user.id);
-          this.setupRealTimeNotifications();
         }
       })
     );
@@ -67,17 +67,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
         error: (err) => console.error('Error loading notifications', err)
       })
     );
-  }
-
-  setupRealTimeNotifications() {
-    this.notificationService.onNewNotification(notification => {
-      // Thêm thông báo mới vào danh sách
-      this.notifications.unshift(notification);
-      // Tăng số lượng thông báo chưa đọc
-      if (!notification.isRead) {
-        this.newNotificationsCount++;
-      }
-    });
   }
 
   markAsRead(notificationId: number) {
@@ -113,7 +102,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   logout() {
     this.authService.logout();
-    this.notificationService.disconnectFromSocket();
   }
 
   ngOnDestroy() {

@@ -29,14 +29,14 @@ export class TrainingPathService {
   
   createTrainingPath(path: Omit<TrainingPath, 'id' | 'createdAt' | 'updatedAt'>): Observable<TrainingPath> {
     const apiPath = {
-      title: path.title,
+      title: path.title || path.name,
       description: path.description,
-      department_id: path.departmentId,
+      departmentId: path.departmentId,
       duration: path.duration,
-      created_by: path.createdBy || null,
-      total_courses: path.totalCourses,
-      duration_in_weeks: path.durationInWeeks,
-      is_active: path.isActive
+      createdBy: path.createdBy,
+      totalCourses: path.totalCourses,
+      durationInWeeks: path.durationInWeeks,
+      isActive: path.isActive
     };
     
     return this.apiBaseService.post<any>(this.endpoint, apiPath)
@@ -47,15 +47,15 @@ export class TrainingPathService {
   
   updateTrainingPath(id: number, path: Partial<TrainingPath>): Observable<TrainingPath> {
     const apiPath: any = {};
-    if (path.title) apiPath.title = path.title;
+    if (path.title || path.name) apiPath.title = path.title || path.name;
     if (path.description) apiPath.description = path.description;
-    if (path.departmentId !== undefined) apiPath.department_id = path.departmentId;
+    if (path.departmentId !== undefined) apiPath.departmentId = path.departmentId;
     if (path.duration) apiPath.duration = path.duration;
-    if (path.totalCourses !== undefined) apiPath.total_courses = path.totalCourses;
-    if (path.durationInWeeks !== undefined) apiPath.duration_in_weeks = path.durationInWeeks;
-    if (path.isActive !== undefined) apiPath.is_active = path.isActive;
+    if (path.totalCourses !== undefined) apiPath.totalCourses = path.totalCourses;
+    if (path.durationInWeeks !== undefined) apiPath.durationInWeeks = path.durationInWeeks;
+    if (path.isActive !== undefined) apiPath.isActive = path.isActive;
     
-    return this.apiBaseService.put<any>(this.endpoint, id, apiPath)
+    return this.apiBaseService.patch<any>(this.endpoint, id, apiPath)
       .pipe(
         map(response => this.mapTrainingPathFromApi(response))
       );
@@ -69,7 +69,7 @@ export class TrainingPathService {
     return {
       id: apiPath.training_path_id,
       title: apiPath.title,
-      name: apiPath.title, // Giữ lại để tương thích với code cũ
+      name: apiPath.title, // Cho tương thích với code cũ
       description: apiPath.description,
       departmentId: apiPath.department_id,
       duration: apiPath.duration,

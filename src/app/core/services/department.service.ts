@@ -29,8 +29,8 @@ export class DepartmentService {
   
   createDepartment(department: Omit<Department, 'id'>): Observable<Department> {
     const apiDepartment = {
-      department_name: department.name,
-      manager_id: department.managerId,
+      departmentName: department.name,
+      managerId: department.managerId,
       description: department.description
     };
     
@@ -42,11 +42,11 @@ export class DepartmentService {
   
   updateDepartment(id: number, department: Partial<Department>): Observable<Department> {
     const apiDepartment: any = {};
-    if (department.name) apiDepartment.department_name = department.name;
-    if (department.managerId !== undefined) apiDepartment.manager_id = department.managerId;
+    if (department.name) apiDepartment.departmentName = department.name;
+    if (department.managerId !== undefined) apiDepartment.managerId = department.managerId;
     if (department.description) apiDepartment.description = department.description;
     
-    return this.apiBaseService.put<any>(this.endpoint, id, apiDepartment)
+    return this.apiBaseService.patch<any>(this.endpoint, id, apiDepartment)
       .pipe(
         map(response => this.mapDepartmentFromApi(response))
       );
