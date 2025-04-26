@@ -77,7 +77,7 @@ export class NotificationService {
   }
 
   deleteNotification(id: number): Observable<void> {
-    return this.apiBaseService.delete<void>(`${this.endpoint}/${id}`);
+    return this.apiBaseService.delete<void>(this.endpoint, id);
   }
 
   // Real-time notifications

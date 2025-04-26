@@ -17,6 +17,7 @@ import { TrainingPathService } from '../../core/services/training-path.service';
 import { DepartmentService } from '../../core/services/department.service';
 import { Department } from '../../core/models/department';
 import { AuthService } from '../../core/services/auth.service';
+import { User } from '../../core/models/user'; // Thêm import User model
 
 @Component({
   selector: 'app-training-path-form',
@@ -45,7 +46,8 @@ export class TrainingPathFormComponent implements OnInit {
   departments: Department[] = [];
 
   isLoading = false;
-  currentUser = this.authService.currentUser;
+  // Thay đổi kiểu dữ liệu để phù hợp với giá trị sẽ được gán
+  currentUser: User | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -68,6 +70,7 @@ export class TrainingPathFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadDepartments();
+    this.currentUser = this.authService.currentUser;
     
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
@@ -128,7 +131,7 @@ export class TrainingPathFormComponent implements OnInit {
       } else {
         const pathData = {
           ...this.pathForm.value,
-          createdBy: this.currentUser?.id // Lấy userId từ người dùng hiện tại
+          createdBy: this.currentUser?.id // Đây vẫn ổn vì currentUser bây giờ có kiểu User | null
         };
         this.trainingPathService.createTrainingPath(pathData).subscribe({
           next: () => {
