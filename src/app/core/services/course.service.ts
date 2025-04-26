@@ -1,6 +1,7 @@
 // src/app/core/services/course.service.ts
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ApiBaseService } from './api-base.service';
 import { Course } from '../models/course';
 
@@ -8,113 +9,87 @@ import { Course } from '../models/course';
   providedIn: 'root'
 })
 export class CourseService {
-  private endpoint = 'courses';
-
-  // Dữ liệu mẫu
-  private mockCourses: Course[] = [
-    { 
-      id: 1, 
-      title: 'Angular Fundamentals', 
-      name: 'Angular Fundamentals', // Giữ lại để tương thích với code cũ
-      description: 'Khóa học cơ bản về Angular framework',
-      trainingPathId: 1,
-      type: 'Online',
-      durationHours: 24,
-      duration: 3, // Giữ lại để tương thích với code cũ
-      level: 'beginner',
-      totalLessons: 12,
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    },
-    { 
-      id: 2, 
-      title: 'Advanced TypeScript', 
-      name: 'Advanced TypeScript', // Giữ lại để tương thích với code cũ
-      description: 'Khóa học nâng cao về TypeScript',
-      trainingPathId: 1,
-      type: 'Video',
-      durationHours: 16,
-      duration: 2, // Giữ lại để tương thích với code cũ
-      level: 'advanced',
-      totalLessons: 8,
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    },
-    { 
-      id: 3, 
-      name: 'Node.js Backend Development', 
-      title: 'Node.js Backend Development',
-      description: 'Phát triển backend với Node.js',
-      trainingPathId: 1,
-      type: 'Online',
-      durationHours: 32,
-      duration: 4,
-      level: 'intermediate',
-      totalLessons: 15,
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    }
-  ];
+  private endpoint = 'training/courses';
 
   constructor(private apiBaseService: ApiBaseService) { }
 
-  getCourses(): Observable<Course[]> {
-    return of(this.mockCourses);
-    // return this.apiBaseService.get<Course[]>(this.endpoint);
+  private mapCourseFromApi(apiCourse: any): Course {
+    return {
+      id: apiCourse.course_id,
+      title: apiCourse.title,
+      name: apiCourse.title, // Giữ lại để tương thích với code cũ
+      description: apiCourse.description,
+      trainingPathId: apiCourse.training_path_id,
+      type: apiCourse.type,
+      durationHours: apiCourse.duration_hours,
+      duration: Math.ceil(apiCourse.duration_hours / 8), // Giữ lại để tương thích với code cũ (approximate)
+      level: apiCourse.level,
+      totalLessons: apiCourse.total_lessons,
+      isActive: apiCourse.is_active,
+      createdAt: new Date(apiCourse.created_at),
+      updatedAt: apiCourse.updated_at ? new Date(apiCourse.updated_at) : undefined
+    };
+  }
+
+  getCourses(params?: any): Observable<Course[]> {
+    return this.apiBaseService.get<any[]>(this.endpoint, params)
+      .pipe(
+        map((courses: any[]) => courses.map(course => this.mapCourseFromApi(course)))
+      );
   }
 
   getCoursesByTrainingPath(trainingPathId: number): Observable<Course[]> {
-    const courses = this.mockCourses.filter(c => c.trainingPathId === trainingPathId);
-    return of(courses);
-    // return this.apiBaseService.get<Course[]>(`${this.endpoint}?trainingPathId=${trainingPathId}`);
+    return this.apiBaseService.get<any[]>(`${this.endpoint}?pathId=${trainingPathId}`)
+      .pipe(
+        map((courses: any[]) => courses.map(course => this.mapCourseFromApi(course)))
+      );
   }
 
   getCourseById(id: number): Observable<Course> {
-    const course = this.mockCourses.find(c => c.id === id);
-    if (course) {
-      return of(course);
-    }
-    throw new Error('Course not found');
-    // return this.apiBaseService.getById<Course>(this.endpoint, id);
+    return this.apiBaseService.getById<any>(this.endpoint, id)
+      .pipe(
+        map(course => this.mapCourseFromApi(course))
+      );
   }
 
   createCourse(course: Omit<Course, 'id' | 'createdAt' | 'updatedAt'>): Observable<Course> {
-    const newCourse = {
-      ...course,
-      id: this.mockCourses.length + 1,
-      createdAt: new Date(),
-      updatedAt: new Date()
+    const apiCourse = {
+      title: course.title || course.name, // Giữ lại để tương thích với code cũ
+      description: course.description,
+      training_path_id: course.trainingPathId,
+      type: course.type,
+      duration_hours: course.durationHours || (course.duration ? course.duration * 8 : 0), // Giữ lại để tương thích với code cũ
+      level: course.level,
+      total_lessons: course.totalLessons,
+      is_active: course.isActive
     };
-    this.mockCourses.push(newCourse as Course);
-    return of(newCourse as Course);
-    // return this.apiBaseService.post<Course>(this.endpoint, course);
+    
+    return this.apiBaseService.post<any>(this.endpoint, apiCourse)
+      .pipe(
+        map(response => this.mapCourseFromApi(response))
+      );
   }
 
   updateCourse(id: number, course: Partial<Course>): Observable<Course> {
-    const index = this.mockCourses.findIndex(c => c.id === id);
-    if (index !== -1) {
-      const updatedCourse = {
-        ...this.mockCourses[index],
-        ...course,
-        updatedAt: new Date()
-      };
-      this.mockCourses[index] = updatedCourse;
-      return of(updatedCourse);
+    const apiCourse: any = {};
+    if (course.title || course.name) apiCourse.title = course.title || course.name;
+    if (course.description) apiCourse.description = course.description;
+    if (course.trainingPathId) apiCourse.training_path_id = course.trainingPathId;
+    if (course.type) apiCourse.type = course.type;
+    if (course.durationHours || course.duration) {
+      apiCourse.duration_hours = course.durationHours || (course.duration ? course.duration * 8 : undefined);
     }
-    throw new Error('Course not found');
-    // return this.apiBaseService.put<Course>(this.endpoint, id, course);
+    if (course.level) apiCourse.level = course.level;
+    if (course.totalLessons !== undefined) apiCourse.total_lessons = course.totalLessons;
+    if (course.isActive !== undefined) apiCourse.is_active = course.isActive;
+    
+    return this.apiBaseService.put<any>(this.endpoint, id, apiCourse)
+      .pipe(
+        map(response => this.mapCourseFromApi(response))
+      );
   }
 
   deleteCourse(id: number): Observable<void> {
-    const index = this.mockCourses.findIndex(c => c.id === id);
-    if (index !== -1) {
-      this.mockCourses.splice(index, 1);
-      return of(undefined);
-    }
-    throw new Error('Course not found');
-    // return this.apiBaseService.delete<void>(this.endpoint, id);
+    return this.apiBaseService.delete<void>(this.endpoint, id);
   }
 }

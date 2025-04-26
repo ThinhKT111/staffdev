@@ -46,6 +46,7 @@ export class DepartmentListComponent implements OnInit {
   departments: Department[] = [];
   filteredDepartments: Department[] = [];
   searchControl = new FormControl('');
+  isLoading = false;
 
   constructor(
     private departmentService: DepartmentService,
@@ -58,14 +59,17 @@ export class DepartmentListComponent implements OnInit {
   }
 
   loadDepartments(): void {
+    this.isLoading = true;
     this.departmentService.getDepartments().subscribe({
       next: (data) => {
         this.departments = data;
         this.filteredDepartments = data;
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Error loading departments', err);
         this.snackBar.open('Không thể tải danh sách phòng ban', 'Đóng', { duration: 3000 });
+        this.isLoading = false;
       }
     });
   }

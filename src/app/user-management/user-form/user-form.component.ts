@@ -115,13 +115,16 @@ export class UserFormComponent implements OnInit {
 
   onSubmit(): void {
     if (this.userForm.valid) {
+      this.isLoading = true;
       if (this.isEditMode && this.userId) {
         this.userService.updateUser(this.userId, this.userForm.value).subscribe({
           next: () => {
+            this.isLoading = false;
             this.snackBar.open('Cập nhật người dùng thành công', 'Đóng', { duration: 3000 });
             this.router.navigate(['/users']);
           },
           error: (err) => {
+            this.isLoading = false;
             console.error('Error updating user', err);
             this.snackBar.open('Không thể cập nhật người dùng', 'Đóng', { duration: 3000 });
           }
@@ -132,10 +135,12 @@ export class UserFormComponent implements OnInit {
         
         this.userService.createUser(userData).subscribe({
           next: () => {
+            this.isLoading = false;
             this.snackBar.open('Thêm người dùng mới thành công', 'Đóng', { duration: 3000 });
             this.router.navigate(['/users']);
           },
           error: (err) => {
+            this.isLoading = false;
             console.error('Error creating user', err);
             this.snackBar.open('Không thể thêm người dùng mới', 'Đóng', { duration: 3000 });
           }

@@ -1,7 +1,7 @@
 // src/app/core/services/user.service.ts
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators'; // Thêm import này
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ApiBaseService } from './api-base.service';
 import { User } from '../models/user';
 
@@ -10,32 +10,6 @@ import { User } from '../models/user';
 })
 export class UserService {
   private endpoint = 'users';
-
-  // Mock data - will be removed when connecting to real API
-  private mockUsers: User[] = [
-    { 
-      id: 1, 
-      cccd: '034095000123',
-      email: 'nguyenvana@example.com', 
-      phone: '0912345678',
-      fullName: 'Nguyễn Văn A', 
-      role: 'TeamLeader', 
-      departmentId: 1, 
-      createdAt: new Date(), 
-      updatedAt: new Date() 
-    },
-    { 
-      id: 2, 
-      cccd: '034095000124',
-      email: 'tranthib@example.com', 
-      phone: '0912345679',
-      fullName: 'Trần Thị B', 
-      role: 'Employee', 
-      departmentId: 2, 
-      createdAt: new Date(), 
-      updatedAt: new Date() 
-    }
-  ];
 
   constructor(private apiBaseService: ApiBaseService) { }
 

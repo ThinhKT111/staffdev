@@ -85,27 +85,33 @@ export class CourseListComponent implements OnInit {
   }
 
   loadAllCourses(): void {
+    this.isLoading = true;
     this.courseService.getCourses().subscribe({
       next: (courses) => {
         this.courses = courses;
         this.filteredCourses = courses;
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Error loading courses', err);
         this.snackBar.open('Không thể tải danh sách khóa học', 'Đóng', { duration: 3000 });
+        this.isLoading = false;
       }
     });
   }
-
+  
   loadCoursesByPath(pathId: number): void {
+    this.isLoading = true;
     this.courseService.getCoursesByTrainingPath(pathId).subscribe({
       next: (courses) => {
         this.courses = courses;
         this.filteredCourses = courses;
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Error loading courses by path', err);
         this.snackBar.open('Không thể tải danh sách khóa học theo lộ trình', 'Đóng', { duration: 3000 });
+        this.isLoading = false;
       }
     });
   }

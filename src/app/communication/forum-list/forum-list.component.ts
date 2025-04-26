@@ -71,14 +71,17 @@ export class ForumListComponent implements OnInit {
   }
 
   loadPosts(): void {
+    this.isLoading = true;
     this.forumService.getPosts().subscribe({
       next: (posts) => {
         this.posts = posts;
         this.filteredPosts = posts;
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Error loading forum posts', err);
         this.snackBar.open('Không thể tải bài đăng', 'Đóng', { duration: 3000 });
+        this.isLoading = false;
       }
     });
   }

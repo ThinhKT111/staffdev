@@ -106,24 +106,33 @@ export class TrainingPathFormComponent implements OnInit {
 
   onSubmit(): void {
     if (this.pathForm.valid) {
+      this.isLoading = true;
       if (this.isEditMode && this.pathId) {
         this.trainingPathService.updateTrainingPath(this.pathId, this.pathForm.value).subscribe({
           next: () => {
+            this.isLoading = false;
             this.snackBar.open('Cập nhật lộ trình đào tạo thành công', 'Đóng', { duration: 3000 });
             this.router.navigate(['/training/paths']);
           },
           error: (err) => {
+            this.isLoading = false;
             console.error('Error updating training path', err);
             this.snackBar.open('Không thể cập nhật lộ trình đào tạo', 'Đóng', { duration: 3000 });
           }
         });
       } else {
-        this.trainingPathService.createTrainingPath(this.pathForm.value).subscribe({
+        const pathData = {
+          ...this.pathForm.value,
+          createdBy: this.currentUser?.id // Lấy userId từ người dùng hiện tại
+        };
+        this.trainingPathService.createTrainingPath(pathData).subscribe({
           next: () => {
+            this.isLoading = false;
             this.snackBar.open('Thêm lộ trình đào tạo thành công', 'Đóng', { duration: 3000 });
             this.router.navigate(['/training/paths']);
           },
           error: (err) => {
+            this.isLoading = false;
             console.error('Error creating training path', err);
             this.snackBar.open('Không thể thêm lộ trình đào tạo', 'Đóng', { duration: 3000 });
           }

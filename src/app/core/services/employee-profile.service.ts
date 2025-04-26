@@ -1,105 +1,93 @@
 // src/app/core/services/employee-profile.service.ts
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ApiBaseService } from './api-base.service';
 import { EmployeeProfile } from '../models/employee-profile';
-import { map } from 'rxjs/operators';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EmployeeProfileService {
   private endpoint = 'profiles';
+  private apiUrl = environment.apiUrl;
 
-  // Dữ liệu mẫu
-  private mockProfiles: EmployeeProfile[] = [
-    {
-      id: 1,
-      userId: 1,
-      dateOfBirth: new Date('1990-05-15'),
-      address: 'Số 123 Đường Lê Lợi, Quận 1, TP. Hồ Chí Minh',
-      experience: '5 năm kinh nghiệm trong lĩnh vực CNTT',
-      skills: 'Angular, React, NodeJS, SQL, MongoDB',
-      avatarUrl: 'assets/images/avatars/avatar-1.jpg',
-      updatedAt: new Date()
-    },
-    {
-      id: 2,
-      userId: 2,
-      dateOfBirth: new Date('1992-11-23'),
-      address: 'Số 456 Đường Nguyễn Huệ, Quận 1, TP. Hồ Chí Minh',
-      experience: '3 năm kinh nghiệm trong lĩnh vực tiếp thị',
-      skills: 'Content Writing, SEO, Social Media Marketing',
-      avatarUrl: 'assets/images/avatars/avatar-2.jpg',
-      updatedAt: new Date()
-    }
-  ];
+  constructor(
+    private apiBaseService: ApiBaseService,
+    private http: HttpClient
+  ) { }
 
-  constructor(private apiBaseService: ApiBaseService) { }
+  private mapProfileFromApi(apiProfile: any): EmployeeProfile {
+    return {
+      id: apiProfile.profile_id,
+      userId: apiProfile.user_id,
+      dateOfBirth: new Date(apiProfile.date_of_birth),
+      address: apiProfile.address,
+      experience: apiProfile.experience,
+      skills: apiProfile.skills,
+      avatarUrl: apiProfile.avatar_url,
+      updatedAt: new Date(apiProfile.updated_at)
+    };
+  }
 
   getProfiles(): Observable<EmployeeProfile[]> {
-    return of(this.mockProfiles);
-    // return this.apiBaseService.get<EmployeeProfile[]>(this.endpoint);
+    return this.apiBaseService.get<any[]>(this.endpoint)
+      .pipe(
+        map((profiles: any[]) => profiles.map(profile => this.mapProfileFromApi(profile)))
+      );
   }
 
   getProfileByUserId(userId: number): Observable<EmployeeProfile> {
-    const profile = this.mockProfiles.find(p => p.userId === userId);
-    if (profile) {
-      return of(profile);
-    }
-    // Nếu không tìm thấy, tạo một profile mới
-    const newProfile: EmployeeProfile = {
-      id: this.mockProfiles.length + 1,
-      userId: userId,
-      dateOfBirth: new Date(),
-      address: '',
-      experience: '',
-      skills: '',
-      avatarUrl: '',
-      updatedAt: new Date()
-    };
-    return of(newProfile);
-    // return this.apiBaseService.get<EmployeeProfile>(`${this.endpoint}/user/${userId}`);
+    return this.apiBaseService.get<any>(`${this.endpoint}/user/${userId}`)
+      .pipe(
+        map(profile => this.mapProfileFromApi(profile))
+      );
   }
 
   createProfile(profile: Omit<EmployeeProfile, 'id' | 'updatedAt'>): Observable<EmployeeProfile> {
-    const newProfile = {
-      ...profile,
-      id: this.mockProfiles.length + 1,
-      updatedAt: new Date()
+    const apiProfile = {
+      user_id: profile.userId,
+      date_of_birth: profile.dateOfBirth,
+      address: profile.address,
+      experience: profile.experience,
+      skills: profile.skills,
+      avatar_url: profile.avatarUrl
     };
-    this.mockProfiles.push(newProfile);
-    return of(newProfile);
-    // return this.apiBaseService.post<EmployeeProfile>(this.endpoint, profile);
+    
+    return this.apiBaseService.post<any>(this.endpoint, apiProfile)
+      .pipe(
+        map(response => this.mapProfileFromApi(response))
+      );
   }
 
   updateProfile(id: number, profile: Partial<EmployeeProfile>): Observable<EmployeeProfile> {
-    const index = this.mockProfiles.findIndex(p => p.id === id);
-    if (index !== -1) {
-      const updatedProfile = {
-        ...this.mockProfiles[index],
-        ...profile,
-        updatedAt: new Date()
-      };
-      this.mockProfiles[index] = updatedProfile;
-      return of(updatedProfile);
-    }
-    throw new Error('Profile not found');
-    // return this.apiBaseService.put<EmployeeProfile>(`${this.endpoint}/${id}`, profile);
+    const apiProfile: any = {};
+    if (profile.dateOfBirth) apiProfile.date_of_birth = profile.dateOfBirth;
+    if (profile.address) apiProfile.address = profile.address;
+    if (profile.experience !== undefined) apiProfile.experience = profile.experience;
+    if (profile.skills !== undefined) apiProfile.skills = profile.skills;
+    if (profile.avatarUrl) apiProfile.avatar_url = profile.avatarUrl;
+    
+    return this.apiBaseService.put<any>(`${this.endpoint}/${id}`, id, apiProfile)
+      .pipe(
+        map(response => this.mapProfileFromApi(response))
+      );
   }
 
   uploadAvatar(userId: number, file: File): Observable<string> {
-    // Giả lập upload avatar
-    const avatarUrl = `assets/images/avatars/user-${userId}.jpg`;
-    const profile = this.mockProfiles.find(p => p.userId === userId);
-    if (profile) {
-      profile.avatarUrl = avatarUrl;
-    }
-    return of(avatarUrl);
-    // Trong API thực tế, sẽ cần sử dụng FormData để upload file
-    // const formData = new FormData();
-    // formData.append('avatar', file);
-    // return this.apiBaseService.post<{avatarUrl: string}>(`${this.endpoint}/${userId}/avatar`, formData)
-    //   .pipe(map(response => response.avatarUrl));
+    const formData = new FormData();
+    formData.append('avatar', file);
+    
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    return this.http.post<{avatarUrl: string}>(`${this.apiUrl}/${this.endpoint}/user/${userId}/avatar`, formData, { headers })
+      .pipe(
+        map(response => response.avatarUrl)
+      );
   }
 }

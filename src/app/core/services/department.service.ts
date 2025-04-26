@@ -1,6 +1,7 @@
 // src/app/core/services/department.service.ts
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ApiBaseService } from './api-base.service';
 import { Department } from '../models/department';
 
@@ -10,70 +11,57 @@ import { Department } from '../models/department';
 export class DepartmentService {
   private endpoint = 'departments';
 
-  // Dữ liệu mẫu
-  private mockDepartments: Department[] = [
-    { id: 1, name: 'IT', description: 'Phòng Công nghệ thông tin', managerId: 1, createdAt: new Date(), updatedAt: new Date() },
-    { id: 2, name: 'HR', description: 'Phòng Nhân sự', managerId: 2, createdAt: new Date(), updatedAt: new Date() },
-    { id: 3, name: 'Finance', description: 'Phòng Tài chính', managerId: 3, createdAt: new Date(), updatedAt: new Date() },
-    { id: 4, name: 'Marketing', description: 'Phòng Marketing', managerId: 4, createdAt: new Date(), updatedAt: new Date() },
-    { id: 5, name: 'Sales', description: 'Phòng Kinh doanh', managerId: 5, createdAt: new Date(), updatedAt: new Date() }
-  ];
-
   constructor(private apiBaseService: ApiBaseService) { }
+  
+  private mapDepartmentFromApi(apiDepartment: any): Department {
+    return {
+      id: apiDepartment.department_id,
+      name: apiDepartment.department_name,
+      managerId: apiDepartment.manager_id,
+      description: apiDepartment.description || ''
+    };
+  }
 
   getDepartments(): Observable<Department[]> {
-    // Giả lập API - sau này sẽ thay bằng API call thực
-    return of(this.mockDepartments);
-    // return this.apiBaseService.get<Department[]>(this.endpoint);
+    return this.apiBaseService.get<any[]>(this.endpoint)
+      .pipe(
+        map((departments: any[]) => departments.map(dept => this.mapDepartmentFromApi(dept)))
+      );
   }
 
   getDepartmentById(id: number): Observable<Department> {
-    // Giả lập API
-    const department = this.mockDepartments.find(d => d.id === id);
-    if (department) {
-      return of(department);
-    }
-    throw new Error('Department not found');
-    // return this.apiBaseService.getById<Department>(this.endpoint, id);
+    return this.apiBaseService.getById<any>(this.endpoint, id)
+      .pipe(
+        map(department => this.mapDepartmentFromApi(department))
+      );
   }
 
   createDepartment(department: Omit<Department, 'id' | 'createdAt' | 'updatedAt'>): Observable<Department> {
-    // Giả lập API
-    const newDepartment = {
-      ...department,
-      id: this.mockDepartments.length + 1,
-      createdAt: new Date(),
-      updatedAt: new Date()
+    const apiDepartment = {
+      department_name: department.name,
+      manager_id: department.managerId,
+      description: department.description
     };
-    this.mockDepartments.push(newDepartment as Department);
-    return of(newDepartment as Department);
-    // return this.apiBaseService.post<Department>(this.endpoint, department);
+    
+    return this.apiBaseService.post<any>(this.endpoint, apiDepartment)
+      .pipe(
+        map(response => this.mapDepartmentFromApi(response))
+      );
   }
 
   updateDepartment(id: number, department: Partial<Department>): Observable<Department> {
-    // Giả lập API
-    const index = this.mockDepartments.findIndex(d => d.id === id);
-    if (index !== -1) {
-      const updatedDepartment = {
-        ...this.mockDepartments[index],
-        ...department,
-        updatedAt: new Date()
-      };
-      this.mockDepartments[index] = updatedDepartment;
-      return of(updatedDepartment);
-    }
-    throw new Error('Department not found');
-    // return this.apiBaseService.put<Department>(this.endpoint, id, department);
+    const apiDepartment: any = {};
+    if (department.name) apiDepartment.department_name = department.name;
+    if (department.managerId !== undefined) apiDepartment.manager_id = department.managerId;
+    if (department.description) apiDepartment.description = department.description;
+    
+    return this.apiBaseService.put<any>(this.endpoint, id, apiDepartment)
+      .pipe(
+        map(response => this.mapDepartmentFromApi(response))
+      );
   }
 
   deleteDepartment(id: number): Observable<void> {
-    // Giả lập API
-    const index = this.mockDepartments.findIndex(d => d.id === id);
-    if (index !== -1) {
-      this.mockDepartments.splice(index, 1);
-      return of(undefined);
-    }
-    throw new Error('Department not found');
-    // return this.apiBaseService.delete<void>(this.endpoint, id);
+    return this.apiBaseService.delete<void>(this.endpoint, id);
   }
 }

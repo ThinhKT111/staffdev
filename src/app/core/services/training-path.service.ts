@@ -1,6 +1,7 @@
 // src/app/core/services/training-path.service.ts
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ApiBaseService } from './api-base.service';
 import { TrainingPath } from '../models/training-path';
 
@@ -8,104 +9,76 @@ import { TrainingPath } from '../models/training-path';
   providedIn: 'root'
 })
 export class TrainingPathService {
-  private endpoint = 'training-paths';
-
-  // Dữ liệu mẫu
-  private mockTrainingPaths: TrainingPath[] = [
-    { 
-      id: 1, 
-      title: 'Đào tạo nhân viên IT', 
-      name: 'Đào tạo nhân viên IT', // Giữ lại để tương thích với code cũ
-      description: 'Lộ trình đào tạo cho nhân viên mới phòng IT',
-      departmentId: 1,
-      duration: 'LongTerm',
-      createdBy: 1,
-      totalCourses: 5,
-      durationInWeeks: 8,
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    },
-    { 
-      id: 2, 
-      title: 'Đào tạo kỹ năng quản lý', 
-      name: 'Đào tạo kỹ năng quản lý', // Giữ lại để tương thích với code cũ
-      description: 'Lộ trình đào tạo cho các quản lý cấp trung',
-      departmentId: 2,
-      duration: 'ShortTerm',
-      createdBy: 1,
-      totalCourses: 3,
-      durationInWeeks: 6,
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    },
-    { 
-      id: 3, 
-      title: 'Đào tạo nhân viên Sales', 
-      name: 'Đào tạo nhân viên Sales', // Giữ lại để tương thích với code cũ
-      description: 'Lộ trình đào tạo kỹ năng bán hàng',
-      departmentId: 5,
-      duration: 'ShortTerm',
-      createdBy: 1,
-      totalCourses: 4,
-      durationInWeeks: 4,
-      isActive: false,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    }
-  ];
+  private endpoint = 'training/paths';
 
   constructor(private apiBaseService: ApiBaseService) { }
 
+  private mapTrainingPathFromApi(apiPath: any): TrainingPath {
+    return {
+      id: apiPath.training_path_id,
+      title: apiPath.title,
+      name: apiPath.title, // Giữ lại để tương thích với code cũ
+      description: apiPath.description,
+      departmentId: apiPath.department_id,
+      duration: apiPath.duration,
+      createdBy: apiPath.created_by,
+      totalCourses: apiPath.total_courses,
+      durationInWeeks: apiPath.duration_in_weeks,
+      isActive: apiPath.is_active,
+      createdAt: new Date(apiPath.created_at),
+      updatedAt: apiPath.updated_at ? new Date(apiPath.updated_at) : undefined
+    };
+  }
+
   getTrainingPaths(): Observable<TrainingPath[]> {
-    return of(this.mockTrainingPaths);
-    // return this.apiBaseService.get<TrainingPath[]>(this.endpoint);
+    return this.apiBaseService.get<any[]>(this.endpoint)
+      .pipe(
+        map((paths: any[]) => paths.map(path => this.mapTrainingPathFromApi(path)))
+      );
   }
 
   getTrainingPathById(id: number): Observable<TrainingPath> {
-    const path = this.mockTrainingPaths.find(p => p.id === id);
-    if (path) {
-      return of(path);
-    }
-    throw new Error('Training path not found');
-    // return this.apiBaseService.getById<TrainingPath>(this.endpoint, id);
+    return this.apiBaseService.getById<any>(this.endpoint, id)
+      .pipe(
+        map(path => this.mapTrainingPathFromApi(path))
+      );
   }
 
-  createTrainingPath(trainingPath: Omit<TrainingPath, 'id' | 'createdAt' | 'updatedAt'>): Observable<TrainingPath> {
-    const newPath = {
-      ...trainingPath,
-      id: this.mockTrainingPaths.length + 1,
-      createdAt: new Date(),
-      updatedAt: new Date()
+  createTrainingPath(path: Omit<TrainingPath, 'id' | 'createdAt' | 'updatedAt'>): Observable<TrainingPath> {
+    const apiPath = {
+      title: path.title,
+      description: path.description,
+      department_id: path.departmentId,
+      duration: path.duration,
+      created_by: path.createdBy || null,
+      total_courses: path.totalCourses,
+      duration_in_weeks: path.durationInWeeks,
+      is_active: path.isActive
     };
-    this.mockTrainingPaths.push(newPath as TrainingPath);
-    return of(newPath as TrainingPath);
-    // return this.apiBaseService.post<TrainingPath>(this.endpoint, trainingPath);
+    
+    return this.apiBaseService.post<any>(this.endpoint, apiPath)
+      .pipe(
+        map(response => this.mapTrainingPathFromApi(response))
+      );
   }
 
-  updateTrainingPath(id: number, trainingPath: Partial<TrainingPath>): Observable<TrainingPath> {
-    const index = this.mockTrainingPaths.findIndex(p => p.id === id);
-    if (index !== -1) {
-      const updatedPath = {
-        ...this.mockTrainingPaths[index],
-        ...trainingPath,
-        updatedAt: new Date()
-      };
-      this.mockTrainingPaths[index] = updatedPath;
-      return of(updatedPath);
-    }
-    throw new Error('Training path not found');
-    // return this.apiBaseService.put<TrainingPath>(this.endpoint, id, trainingPath);
+  updateTrainingPath(id: number, path: Partial<TrainingPath>): Observable<TrainingPath> {
+    const apiPath: any = {};
+    if (path.title) apiPath.title = path.title;
+    if (path.description) apiPath.description = path.description;
+    if (path.departmentId !== undefined) apiPath.department_id = path.departmentId;
+    if (path.duration) apiPath.duration = path.duration;
+    if (path.totalCourses !== undefined) apiPath.total_courses = path.totalCourses;
+    if (path.durationInWeeks !== undefined) apiPath.duration_in_weeks = path.durationInWeeks;
+    if (path.isActive !== undefined) apiPath.is_active = path.isActive;
+    
+    return this.apiBaseService.put<any>(this.endpoint, id, apiPath)
+      .pipe(
+        map(response => this.mapTrainingPathFromApi(response))
+      );
   }
 
   deleteTrainingPath(id: number): Observable<void> {
-    const index = this.mockTrainingPaths.findIndex(p => p.id === id);
-    if (index !== -1) {
-      this.mockTrainingPaths.splice(index, 1);
-      return of(undefined);
-    }
-    throw new Error('Training path not found');
-    // return this.apiBaseService.delete<void>(this.endpoint, id);
+    return this.apiBaseService.delete<void>(this.endpoint, id);
   }
 }

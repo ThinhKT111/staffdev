@@ -77,16 +77,19 @@ export class DepartmentFormComponent implements OnInit {
 
   onSubmit(): void {
     if (this.departmentForm.valid) {
+      this.isLoading = true;
       if (this.isEditMode) {
         this.departmentService.updateDepartment(
           this.data.department!.id,
           this.departmentForm.value
         ).subscribe({
           next: () => {
+            this.isLoading = false;
             this.snackBar.open('Cập nhật phòng ban thành công', 'Đóng', { duration: 3000 });
             this.dialogRef.close(true);
           },
           error: (err) => {
+            this.isLoading = false;
             console.error('Error updating department', err);
             this.snackBar.open('Không thể cập nhật phòng ban', 'Đóng', { duration: 3000 });
           }
@@ -94,10 +97,12 @@ export class DepartmentFormComponent implements OnInit {
       } else {
         this.departmentService.createDepartment(this.departmentForm.value).subscribe({
           next: () => {
+            this.isLoading = false;
             this.snackBar.open('Thêm phòng ban thành công', 'Đóng', { duration: 3000 });
             this.dialogRef.close(true);
           },
           error: (err) => {
+            this.isLoading = false;
             console.error('Error creating department', err);
             this.snackBar.open('Không thể thêm phòng ban', 'Đóng', { duration: 3000 });
           }

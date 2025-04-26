@@ -63,14 +63,17 @@ export class TrainingPathListComponent implements OnInit {
   }
 
   loadTrainingPaths(): void {
+    this.isLoading = true;
     this.trainingPathService.getTrainingPaths().subscribe({
       next: (paths) => {
         this.trainingPaths = paths;
         this.filteredPaths = paths;
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Error loading training paths', err);
         this.snackBar.open('Không thể tải danh sách lộ trình đào tạo', 'Đóng', { duration: 3000 });
+        this.isLoading = false;
       }
     });
   }

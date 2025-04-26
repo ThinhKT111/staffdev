@@ -101,14 +101,17 @@ export class DocumentListComponent implements OnInit {
   }
 
   loadDocuments(): void {
+    this.isLoading = true;
     this.documentService.getDocuments().subscribe({
       next: (docs) => {
         this.documents = docs;
         this.applyFilters();
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Error loading documents', err);
         this.snackBar.open('Không thể tải danh sách tài liệu', 'Đóng', { duration: 3000 });
+        this.isLoading = false;
       }
     });
   }
@@ -120,6 +123,7 @@ export class DocumentListComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error loading categories', err);
+        this.snackBar.open('Không thể tải danh mục tài liệu', 'Đóng', { duration: 3000 });
       }
     });
   }
@@ -181,6 +185,7 @@ export class DocumentListComponent implements OnInit {
 
   uploadDocument(): void {
     if (this.uploadForm.valid && this.selectedFile && this.currentUser) {
+      this.isLoading = true;
       const { title, category } = this.uploadForm.value;
       
       this.documentService.uploadDocument(title, category, this.selectedFile, this.currentUser.id).subscribe({
@@ -190,16 +195,19 @@ export class DocumentListComponent implements OnInit {
           this.selectedFile = null;
           this.showUploadForm = false;
           this.loadDocuments();
+          this.isLoading = false;
         },
         error: (err) => {
           console.error('Error uploading document', err);
           this.snackBar.open('Không thể tải lên tài liệu', 'Đóng', { duration: 3000 });
+          this.isLoading = false;
         }
       });
     }
   }
 
   downloadDocument(id: number): void {
+    this.isLoading = true;
     this.documentService.downloadDocument(id).subscribe({
       next: (url) => {
         // Trong môi trường thực, cần tạo một link element và kích hoạt click để tải
@@ -211,10 +219,12 @@ export class DocumentListComponent implements OnInit {
         document.body.removeChild(a);
         
         this.snackBar.open('Đang tải tài liệu...', 'Đóng', { duration: 2000 });
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Error downloading document', err);
         this.snackBar.open('Không thể tải tài liệu', 'Đóng', { duration: 3000 });
+        this.isLoading = false;
       }
     });
   }

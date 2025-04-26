@@ -15,6 +15,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { AuthService } from '../../core/services/auth.service';
+import { NotificationService } from '../../core/services/notification.service';
 
 @Component({
   selector: 'app-login',
@@ -44,7 +45,8 @@ export class LoginComponent {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private notificationService: NotificationService
   ) {
     this.loginForm = this.fb.group({
       username: ['', [Validators.required]], // Sử dụng cccd như username
@@ -59,8 +61,12 @@ export class LoginComponent {
       const { username, password } = this.loginForm.value;
       
       this.authService.login(username, password).subscribe({
-        next: () => {
+        next: (response) => {
           this.isLoading = false;
+          
+          // Kết nối socket cho thông báo thời gian thực
+          this.notificationService.connectToSocket(response.user.id);
+          
           this.router.navigate(['/dashboard']);
         },
         error: (error) => {

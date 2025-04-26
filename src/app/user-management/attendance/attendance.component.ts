@@ -118,6 +118,7 @@ export class AttendanceComponent implements OnInit {
   }
 
   loadAttendanceData(userId: number): void {
+    this.isLoading = true;
     this.attendanceService.getAttendanceByUser(userId).subscribe({
       next: (records) => {
         this.attendanceRecords = records.sort((a, b) => {
@@ -127,10 +128,12 @@ export class AttendanceComponent implements OnInit {
         });
         // Update filtered leave records
         this.updateFilteredLeaveRecords();
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Error loading attendance data', err);
         this.snackBar.open('Không thể tải dữ liệu điểm danh', 'Đóng', { duration: 3000 });
+        this.isLoading = false;
       }
     });
   }
@@ -175,16 +178,19 @@ export class AttendanceComponent implements OnInit {
   checkIn(): void {
     if (!this.currentUser) return;
     
+    this.isLoading = true;
     this.attendanceService.checkIn(this.currentUser.id).subscribe({
       next: (record) => {
         this.todayAttendance = record;
         this.hasCheckedInToday = true;
         this.snackBar.open('Điểm danh vào ca thành công', 'Đóng', { duration: 3000 });
         this.loadAttendanceData(this.currentUser!.id);
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Error checking in', err);
         this.snackBar.open('Không thể điểm danh vào ca', 'Đóng', { duration: 3000 });
+        this.isLoading = false;
       }
     });
   }
@@ -192,16 +198,19 @@ export class AttendanceComponent implements OnInit {
   checkOut(): void {
     if (!this.currentUser || !this.todayAttendance) return;
     
+    this.isLoading = true;
     this.attendanceService.checkOut(this.currentUser.id).subscribe({
       next: (record) => {
         this.todayAttendance = record;
         this.hasCheckedOutToday = true;
         this.snackBar.open('Điểm danh ra ca thành công', 'Đóng', { duration: 3000 });
         this.loadAttendanceData(this.currentUser!.id);
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Error checking out', err);
         this.snackBar.open('Không thể điểm danh ra ca', 'Đóng', { duration: 3000 });
+        this.isLoading = false;
       }
     });
   }
@@ -209,17 +218,20 @@ export class AttendanceComponent implements OnInit {
   requestLeave(): void {
     if (!this.currentUser || !this.leaveForm.valid) return;
     
-    const { leaveType, date } = this.leaveForm.value;
+    this.isLoading = true;
+    const { leaveType, date, reason } = this.leaveForm.value;
     
-    this.attendanceService.requestLeave(this.currentUser.id, leaveType, date).subscribe({
+    this.attendanceService.requestLeave(this.currentUser.id, leaveType, date, reason).subscribe({
       next: (record) => {
         this.snackBar.open('Đã gửi yêu cầu nghỉ phép', 'Đóng', { duration: 3000 });
         this.leaveForm.reset({ leaveType: 'Annual', date: new Date() });
         this.loadAttendanceData(this.currentUser!.id);
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Error requesting leave', err);
         this.snackBar.open('Không thể gửi yêu cầu nghỉ phép', 'Đóng', { duration: 3000 });
+        this.isLoading = false;
       }
     });
   }

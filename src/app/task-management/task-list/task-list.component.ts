@@ -69,16 +69,20 @@ export class TaskListComponent implements OnInit {
   }
 
   loadTasks(): void {
+    this.isLoading = true;
+    
     if (this.isAdmin) {
       // Admin sees all tasks
       this.taskService.getTasks().subscribe({
         next: (tasks) => {
           this.tasks = tasks;
           this.filteredTasks = tasks;
+          this.isLoading = false;
         },
         error: (err) => {
           console.error('Error loading tasks', err);
           this.snackBar.open('Không thể tải danh sách nhiệm vụ', 'Đóng', { duration: 3000 });
+          this.isLoading = false;
         }
       });
     } else {
@@ -87,10 +91,12 @@ export class TaskListComponent implements OnInit {
         next: (tasks) => {
           this.tasks = tasks;
           this.filteredTasks = tasks;
+          this.isLoading = false;
         },
         error: (err) => {
           console.error('Error loading tasks', err);
           this.snackBar.open('Không thể tải danh sách nhiệm vụ', 'Đóng', { duration: 3000 });
+          this.isLoading = false;
         }
       });
     }

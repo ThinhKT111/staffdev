@@ -114,7 +114,7 @@ export class EmployeeProfileComponent implements OnInit {
       }
     });
   }
-
+  
   loadProfileData(): void {
     this.profileService.getProfileByUserId(this.userId).subscribe({
       next: (profile) => {
@@ -128,8 +128,24 @@ export class EmployeeProfileComponent implements OnInit {
         this.avatarPreview = profile.avatarUrl || null;
       },
       error: (err) => {
-        console.error('Error loading profile data', err);
-        this.snackBar.open('Không thể tải thông tin hồ sơ', 'Đóng', { duration: 3000 });
+        // Nếu không tìm thấy hồ sơ, tạo một hồ sơ mới
+        if (err.status === 404) {
+          this.profile = {
+            id: 0, // Sẽ được server tạo
+            userId: this.userId,
+            dateOfBirth: new Date(),
+            address: '',
+            experience: '',
+            skills: '',
+            avatarUrl: '',
+            updatedAt: new Date()
+          };
+          
+          // Không cần hiển thị lỗi vì đây là trường hợp bình thường khi tạo hồ sơ mới
+        } else {
+          console.error('Error loading profile data', err);
+          this.snackBar.open('Không thể tải thông tin hồ sơ', 'Đóng', { duration: 3000 });
+        }
       }
     });
   }

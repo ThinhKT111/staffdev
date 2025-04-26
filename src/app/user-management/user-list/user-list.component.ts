@@ -52,6 +52,7 @@ export class UserListComponent implements OnInit {
   totalUsers = 0;
   pageSize = 10;
   pageIndex = 0;
+  isLoading = false;
 
   constructor(
     private userService: UserService,
@@ -63,15 +64,18 @@ export class UserListComponent implements OnInit {
   }
 
   loadUserData() {
+    this.isLoading = true;
     this.userService.getUsers().subscribe({
       next: (users) => {
         this.dataSource = users;
         this.filteredDataSource = users;
         this.totalUsers = users.length;
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Error loading users', err);
         this.snackBar.open('Không thể tải danh sách người dùng', 'Đóng', { duration: 3000 });
+        this.isLoading = false;
       }
     });
   }
@@ -86,13 +90,32 @@ export class UserListComponent implements OnInit {
   }
 
   sortData(sort: Sort) {
-    // Implement sorting logic
+    if (!sort.active || sort.direction === '') {
+      this.filteredDataSource = [...this.dataSource];
+      return;
+    }
+
+    this.filteredDataSource = [...this.dataSource].sort((a, b) => {
+      const isAsc = sort.direction === 'asc';
+      switch (sort.active) {
+        case 'name': return this.compare(a.fullName, b.fullName, isAsc);
+        case 'email': return this.compare(a.email, b.email, isAsc);
+        case 'role': return this.compare(a.role, b.role, isAsc);
+        case 'id': return this.compare(a.id, b.id, isAsc);
+        default: return 0;
+      }
+    });
+  }
+
+  compare(a: any, b: any, isAsc: boolean) {
+    return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
   }
 
   handlePageEvent(event: PageEvent) {
     this.pageSize = event.pageSize;
     this.pageIndex = event.pageIndex;
-    // Implement pagination logic
+    // Trong ứng dụng thực tế, bạn có thể muốn gọi API với pagination
+    // this.userService.getUsers({ page: this.pageIndex, limit: this.pageSize })
   }
 
   getFullName(user: User): string {
